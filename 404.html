@@ -3,36 +3,65 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Redirecting...</title>
+<title>Skatecart Dashboard</title>
 <style>
-body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;background:#fff;font-family:Arial;color:#666}
-.box{text-align:center;line-height:32px;font-size:16px}
-.loader{width:35px;height:35px;border:3px solid #eee;border-top:3px solid #0071dc;border-radius:50%;margin:0 auto 20px;animation:spin 0.8s linear infinite}
-@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+body{font-family:Arial;background:#f5f7fa;margin:0;padding:20px}
+.card{max-width:500px;margin:40px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+h2{margin:0 0 15px;text-align:center;color:#0071dc}
+input{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;box-sizing:border-box;margin-bottom:12px}
+button{width:100%;padding:12px;background:#0071dc;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer}
+button:disabled{background:#999}
+#result{margin-top:15px;padding:12px;background:#eef6ff;border-radius:8px;word-break:break-all;display:none}
+a{color:#0071dc;text-decoration:none;font-weight:bold}
 </style>
 </head>
 <body>
-<div class="box">
-<div class="loader"></div>
-🔒 Checking for traffic security...<br>
-🛡️ Verifying your connection...<br>
-<span id="t">Redirecting...</span>
+<div class="card">
+<h2>Skatecart Link Maker</h2>
+<input type="url" id="longUrl" placeholder="Walmart ka long link yahan paste karo...">
+<button id="btn" onclick="createLink()">Create Short Link</button>
+<div id="result"></div>
 </div>
+
 <script>
-var path = window.location.pathname;
-var code = path.split('/').pop().split('?')[0];
 var KVDB_BUCKET = "https://kvdb.io/9f8e7d6c5b4a";
-if(code && code.length > 2){
-  fetch(KVDB_BUCKET + "/" + code)
-.then(r => r.text())
-.then(longUrl => {
-    if(longUrl && longUrl.indexOf("http") === 0){
-      document.getElementById("t").innerHTML = "Redirecting to Walmart...";
-      setTimeout(function(){ window.location.replace(longUrl); }, 1500);
-    } else {
-      document.getElementById("t").innerHTML = "Invalid Link";
-    }
-  });
+
+function makeCode(len){
+  var chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  var c = "";
+  for(var i=0;i<len;i++) c+= chars.charAt(Math.floor(Math.random()*chars.length));
+  return c;
+}
+
+async function createLink(){
+  var longUrl = document.getElementById("longUrl").value.trim();
+  var btn = document.getElementById("btn");
+  var resDiv = document.getElementById("result");
+  if(!longUrl || longUrl.indexOf("http")!==0){
+    alert("Sahi Walmart link dalo!");
+    return;
+  }
+  btn.disabled=true;
+  btn.innerText="Creating...";
+  
+  var code = makeCode(8);
+  try{
+    // KVDB me save karo
+    await fetch(KVDB_BUCKET + "/" + code, {
+      method: "POST",
+      body: longUrl
+    });
+    
+    var shortLink = "https://skatecart.github.io/Skatecart/r/" + code;
+    resDiv.style.display="block";
+    resDiv.innerHTML = "✅ Link Ban Gayi!<br><br><a href='"+shortLink+"' target='_blank'>"+shortLink+"</a><br><br><button onclick=\"navigator.clipboard.writeText('"+shortLink+"')\">Copy Link</button>";
+    btn.innerText="Create Short Link";
+    btn.disabled=false;
+  }catch(e){
+    alert("Error: " + e.message);
+    btn.disabled=false;
+    btn.innerText="Create Short Link";
+  }
 }
 </script>
 </body>
