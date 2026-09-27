@@ -25,13 +25,11 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 #loginPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#f0faf9;z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
 </style></head><body>
 
-<!-- LOGIN PAGE - AAPKA WALA CODE FIXED -->
 <div id="loginPage">
 <div class="box" style="width:100%;max-width:400px">
 <div class="logo" style="text-align:center;margin-bottom:10px;font-size:32px">Skate <span>Cart</span></div>
 <h2 id="logTitle" style="text-align:center">Create Account</h2>
 <p style="text-align:center;font-size:11px;color:#64748b">Policy: Facebook Group Link Lazmi Hai</p>
-
 <div style="display:flex;gap:8px">
 <input id="fName" class="inp" placeholder="First Name">
 <input id="lName" class="inp" placeholder="Last Name">
@@ -40,8 +38,7 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <input id="lPass" type="password" class="inp" placeholder="Password - min 4 characters">
 <input id="fbLink" class="inp" placeholder="Facebook Group Link - https://facebook.com/groups/...">
 <label id="policyLabel" style="font-size:11px;color:#334155;display:flex;gap:6px;margin-top:10px"><input type="checkbox" id="policyCheck"> I agree to Policy & Conditions - Minimum Payout $25, 45 Days Pending, Facebook Group Required</label>
-
-<button class="btn" onclick="doAuth()">Create Account & Continue</button>
+<button class="btn" id="authBtn" onclick="doAuth()">Create Account & Continue</button>
 <p style="text-align:center;font-size:13px;margin-top:12px"><span style="color:#0d9488;font-weight:800;cursor:pointer" onclick="toggleLog()" id="logSwitch">Already have account? Sign In</span></p>
 </div>
 </div>
@@ -50,7 +47,8 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 <div class="drawer" id="drawer"><div style="display:flex;justify-content:space-between;align-items:center"><div class="logo" style="font-size:22px">Skate <span>Cart</span></div><span style="font-size:28px;cursor:pointer" onclick="closeMenu()">✕</span></div><div style="margin-top:20px"><div class="mItem active" onclick="showPage('links',this)">🔗 My Links</div><div class="mItem" onclick="showPage('analytics',this)">📊 Analytics</div><div class="mItem" onclick="showPage('payment',this)">💳 Payouts</div><div class="mItem" onclick="showPage('history',this)">📜 Payment History</div></div><div style="margin-top:25px;border-top:1px solid #eee;padding-top:16px"><div style="font-weight:800" id="uName">-</div><div style="font-size:13px;color:#64748b" id="uEmail">-</div><div style="margin-top:12px;background:#fef2f2;color:#ef4444;padding:10px;border-radius:10px;font-weight:800;text-align:center;cursor:pointer" onclick="signOut()">Sign out</div></div></div>
 
-<div class="wrap"><div id="links" class="page active">
+<div class="wrap">
+<div id="links" class="page active">
 <div class="payout"><div style="font-weight:900;font-size:18px">💳 Your Payout Dashboard</div>
 <div class="pGrid"><div class="pItem"><b>Current Balance</b><span id="earn">$0.00</span></div><div class="pItem"><b>Total Clicks</b><span id="clicks">0</span></div><div class="pItem sale"><b>Total Sales</b><span id="sales">0 Sales</span></div><div class="pItem sale"><b>Sales Commission</b><span id="saleEarn">$0.00</span></div><div class="pItem"><b>Minimum Payout</b><span>$25.00</span></div><div class="pItem"><b>Status</b><span id="status" style="font-size:12px;color:#facc15">Pending</span></div></div>
 <div class="progress"><div id="pBar" class="bar" style="width:0%"></div></div>
@@ -59,6 +57,54 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <div id="readySec" style="display:none"><div class="box" style="background:#ecfdf5;text-align:center"><h3>🎉 Link Ready!</h3><div class="linkArea" id="shortLink"></div><button class="btn" onclick="copyT('shortLink')">Copy & Share to Earn</button></div></div>
 <div class="box"><div style="font-weight:900;font-size:18px">🔗 Recent Links</div><div id="recent" style="margin-top:10px"></div></div>
 </div>
+
+<div id="analytics" class="page">
+<div class="box">
+<div style="font-weight:900;font-size:20px;text-align:center">📊 Analytics</div>
+<div style="background:#f8fafc;border-radius:14px;padding:14px;margin-top:14px;border:1px solid #eef2f2">
+<div style="text-align:center;font-size:11px;color:#64748b;font-weight:700;letter-spacing:1px;margin-bottom:8px">TIME PERIOD</div>
+<div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px">
+<button onclick="setPeriod('7')" id="p7" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Last 7 days</button>
+<button onclick="setPeriod('30')" id="p30" style="padding:8px 14px;border-radius:20px;border:none;background:#2563eb;color:#fff;font-size:12px;font-weight:700">Last 30 days</button>
+<button onclick="setPeriod('custom')" id="pC" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Custom</button>
+</div>
+<div style="display:flex;gap:8px">
+<input id="dateStart" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0">
+<input id="dateEnd" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0">
+</div>
+<button onclick="applyAnalytics()" class="btn">Apply</button>
+</div>
+<div style="background:#f0fdfa;border-radius:16px;padding:20px;text-align:center;margin-top:14px;border:1px solid #ccfbf1">
+<div style="font-weight:800;margin:8px 0">Total Clicks: <span id="aClicks">0</span></div>
+<div style="font-weight:800;margin:8px 0">Total Sales: <span id="aSales">0 Sales</span></div>
+<div style="font-weight:900;margin:8px 0;font-size:20px;color:#0f766e">Total Earnings: $<span id="aEarn">0.00</span></div>
+<div style="font-size:12px;color:#64748b;margin-top:8px" id="aLabel">Last 30 days</div>
+</div>
+<div id="aRecent" style="margin-top:10px"></div>
+</div>
+</div>
+
+<div id="payment" class="page">
+<div class="box" style="text-align:center">
+<div style="font-weight:900;font-size:20px">💳 Payouts</div>
+<p style="font-size:13px;color:#64748b">Minimum Payout $25 - 45 Days Pending</p>
+<div style="background:#f0fdfa;padding:20px;border-radius:16px;margin-top:10px;border:1px solid #ccfbf1">
+<div style="font-size:13px;color:#64748b">Current Balance</div>
+<div style="font-size:32px;font-weight:900;color:#0f766e" id="pEarn">$0.00</div>
+<div class="progress"><div id="pBar2" class="bar" style="width:0%"></div></div>
+<div style="font-size:11px;color:#64748b;margin-top:8px">$<span id="pEarnSmall">0.00</span> / $25.00</div>
+</div>
+<button class="btn" style="opacity:.6">Request Payout (Min $25)</button>
+</div>
+</div>
+
+<div id="history" class="page">
+<div class="box" style="text-align:center">
+<div style="font-weight:900;font-size:20px">📜 Payment History</div>
+<p style="font-size:13px;color:#999;margin-top:20px">No payment history yet.<br>Your payouts will show here after 45 days.</p>
+</div>
+</div>
+
 <div class="footerZy">© 2026 SkateCart. All rights reserved.</div>
 </div>
 
@@ -66,13 +112,15 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 let isSignup=true;
 function toggleLog(){
  isSignup=!isSignup;
- document.getElementById('fName').style.display=isSignup?'block':'none';
- document.getElementById('lName').style.display=isSignup?'block':'none';
- document.getElementById('fbLink').style.display=isSignup?'block':'none';
- document.getElementById('policyLabel').style.display=isSignup?'flex':'none';
+ let disp=isSignup?'block':'none';
+ let flexDisp=isSignup?'flex':'none';
+ document.getElementById('fName').style.display=disp;
+ document.getElementById('lName').style.display=disp;
+ document.getElementById('fbLink').style.display=disp;
+ document.getElementById('policyLabel').style.display=flexDisp;
  document.getElementById('logTitle').innerText=isSignup?'Create Account':'Sign In';
  document.getElementById('logSwitch').innerText=isSignup?'Already have account? Sign In':'New user? Create Account';
- document.querySelector('#loginPage .btn').innerText = isSignup ? 'Create Account & Continue' : 'Sign In & Continue';
+ document.getElementById('authBtn').innerText = isSignup ? 'Create Account & Continue' : 'Sign In & Continue';
 }
 function doAuth(){
  let fName=document.getElementById('fName').value.trim();
@@ -107,14 +155,68 @@ function checkLogin(){
 }
 function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('show')}
 function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
-function showPage(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.mItem').forEach(m=>m.classList.remove('active'));if(el) el.classList.add('active');closeMenu();}
+function showPage(id,el){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ let target=document.getElementById(id);
+ if(target) target.classList.add('active');
+ document.querySelectorAll('.mItem').forEach(m=>m.classList.remove('active'));
+ if(el) el.classList.add('active');
+ closeMenu();
+ if(id==='analytics') applyAnalytics();
+ if(id==='payment') updatePayout();
+}
 function signOut(){localStorage.removeItem('skate_current');location.reload();}
 let cur=checkLogin();
 if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
 function genID(){return Math.random().toString(36).substring(2,10).toUpperCase();}
 function makeLinks(){let o=document.getElementById('wLink').value.trim();if(!o)return alert("Please paste a link");document.getElementById('genBtn').innerText="Generating...";setTimeout(()=>{let sid=genID();let short=location.origin+location.pathname+"?s="+sid;let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');all.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});localStorage.setItem('skate_all_links',JSON.stringify(all));document.getElementById('shortLink').innerText=short;document.getElementById('readySec').style.display='block';loadR();document.getElementById('genBtn').innerText="Generate Earning Link";},700);}
-function loadR(){if(!cur) return;let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');let mine=all.filter(x=>x.owner===cur.email).reverse();let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);let sales=mine.reduce((a,b)=>a+(b.sales||0),0);let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0);let total=clicks*0.25+saleComm;document.getElementById('clicks').innerText=clicks;document.getElementById('sales').innerText=sales+" Sales";document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2);document.getElementById('earn').innerText="$"+total.toFixed(2);document.getElementById('pBar').style.width=Math.min((total/25)*100,100)+"%";let h="";mine.forEach((mm,idx)=>{let num=mine.length-idx; h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="font-weight:800;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b;margin:6px 0 0 36px">🔗 Created ${mm.date}</div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');this.innerText='Copied!';setTimeout(()=>this.innerText='Copy',1500)">Copy</button></div>`;});document.getElementById('recent').innerHTML=h||"<p style='text-align:center;color:#999'>No links yet</p>";}
+function loadR(){
+ if(!cur) return;
+ let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+ let mine=all.filter(x=>x.owner===cur.email).reverse();
+ let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
+ let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
+ let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
+ let total=clicks*0.25+saleComm;
+ document.getElementById('clicks').innerText=clicks;
+ document.getElementById('sales').innerText=sales+" Sales";
+ document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2);
+ document.getElementById('earn').innerText="$"+total.toFixed(2);
+ document.getElementById('pBar').style.width=Math.min((total/25)*100,100)+"%";
+ let h="";mine.forEach((mm,idx)=>{let num=mine.length-idx; h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="font-weight:800;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b;margin:6px 0 0 36px">🔗 Created ${mm.date}</div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');this.innerText='Copied!';setTimeout(()=>this.innerText='Copy',1500)">Copy</button></div>`;});document.getElementById('recent').innerHTML=h||"<p style='text-align:center;color:#999'>No links yet</p>";
+}
+function setPeriod(type){
+ document.getElementById('p7').style.background='#fff'; document.getElementById('p7').style.color='#000'; document.getElementById('p7').style.border='1px solid #e2e8f0';
+ document.getElementById('p30').style.background='#fff'; document.getElementById('p30').style.color='#000'; document.getElementById('p30').style.border='1px solid #e2e8f0';
+ document.getElementById('pC').style.background='#fff'; document.getElementById('pC').style.color='#000'; document.getElementById('pC').style.border='1px solid #e2e8f0';
+ if(type=='7'){ document.getElementById('p7').style.background='#2563eb'; document.getElementById('p7').style.color='#fff'; document.getElementById('p7').style.border='none'; document.getElementById('aLabel').innerText='Last 7 days'; }
+ if(type=='30'){ document.getElementById('p30').style.background='#2563eb'; document.getElementById('p30').style.color='#fff'; document.getElementById('p30').style.border='none'; document.getElementById('aLabel').innerText='Last 30 days'; }
+ if(type=='custom'){ document.getElementById('pC').style.background='#2563eb'; document.getElementById('pC').style.color='#fff'; document.getElementById('pC').style.border='none'; document.getElementById('aLabel').innerText='Custom Date'; }
+}
+function applyAnalytics(){
+ if(!cur) return;
+ let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+ let mine=all.filter(x=>x.owner===cur.email);
+ let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
+ let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
+ let earn=clicks*0.25 + mine.reduce((a,b)=>a+(b.saleAmount||0),0);
+ document.getElementById('aClicks').innerText=clicks;
+ document.getElementById('aSales').innerText=sales+" Sales";
+ document.getElementById('aEarn').innerText=earn.toFixed(2);
+ document.getElementById('aRecent').innerHTML=document.getElementById('recent').innerHTML;
+}
+function updatePayout(){
+ if(!cur) return;
+ let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+ let mine=all.filter(x=>x.owner===cur.email);
+ let total=mine.reduce((a,b)=>a+(b.clicks||0),0)*0.25;
+ document.getElementById('pEarn').innerText="$"+total.toFixed(2);
+ document.getElementById('pEarnSmall').innerText=total.toFixed(2);
+ document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
+}
 function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
-(function(){let p=new URLSearchParams(location.search);let s=p.get('s');let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');if(s){let f=all.find(x=>x.shortId===s);if(f){f.clicks=(f.clicks||0)+1;localStorage.setItem('skate_all_links',JSON.stringify(all));location.href=f.original;}}})();if(cur) loadR();
+(function(){let p=new URLSearchParams(location.search);let s=p.get('s');let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');if(s){let f=all.find(x=>x.shortId===s);if(f){f.clicks=(f.clicks||0)+1;localStorage.setItem('skate_all_links',JSON.stringify(all));location.href=f.original;}}})();
+if(cur) loadR();
+document.getElementById('dateEnd').valueAsDate=new Date();
 </script>
 </body></html>
