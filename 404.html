@@ -1,35 +1,22 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Checking...</title>
-<style>
-body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;background:#fff;font-family:system-ui,Arial;color:#555}
-.box{text-align:center;font-size:14px;line-height:28px}
-</style>
-</head>
-<body>
-<div class="box">
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Checking...</title>
+<style>body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;font-family:Arial}.box{text-align:center}</style></head>
+<body><div class="box">
 <div>🔒 Checking for traffic security...</div>
 <div>🛡️ Verifying your connection...</div>
 <div>🛡️ Redirecting to Walmart...</div>
-<div id="s" style="font-size:12px;color:#999;margin-top:10px"></div>
+<div id="msg" style="color:red;margin-top:10px"></div>
 </div>
 <script>
-var c=location.pathname.split('/').pop().split('?')[0];
-var K="https://kvdb.io/A1C8F2B0-9E4D-4F6A-8B2C-7D1E9F0A2B3C";
-fetch(K+"/"+c).then(r=>r.text()).then(u=>{
-  u=u.trim().replace(/"/g,'');
-  if(u && u.length > 5){
-    if(u.indexOf("http")!==0) u="https://"+u;
-    setTimeout(()=>{location.replace(u)},1200);
-  }else{
-    document.getElementById("s").innerText="Invalid or Expired Link: "+c;
+var code = location.pathname.split("/").pop().split("?")[0];
+var BUCKET = "https://kvdb.io/A1C8F2B0-9E4D-4F6A-8B2C-7D1E9F0A2B3C";
+fetch(BUCKET+"/"+code).then(r=>r.text()).then(link=>{
+  link=link.trim().replace(/"/g,'');
+  // FINAL CHECK - agar link sahi nahi hai to redirect mat karo
+  if(link.startsWith("http") && link.includes("walmart") &&!link.includes("bucket")){
+    setTimeout(()=>{ location.replace(link) }, 1500);
+  } else {
+    document.getElementById("msg").innerText = "Invalid Link: " + code + " - Naya link banao";
   }
-}).catch(()=>{
-  document.getElementById("s").innerText="Link Expired, Please Create New Link";
 });
-</script>
-</body>
-</html>
+</script></body></html>
