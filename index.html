@@ -1,6 +1,67 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkateCart PRO</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>emailjs.init("y5qo1fs87tL0pZihp");</script>
+<script>
+// ✅ FINAL SHORT LINK SYSTEM - CHOTI LINK HAR PHONE ME CHALEGI
+(function(){
+  try{
+    var path = location.pathname;
+    var m = path.match(/\/r\/([A-Z0-9]{6,10})/i);
+    if(!m) return;
+    var s = m[1].toUpperCase();
+    var BUCKET = "SkateCartPro_786";
+    var all = JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+    var f = all.find(x=> (x.shortId||'').toUpperCase()===s);
+
+    function showProcessAndGo(originalUrl){
+      if(f){ f.clicks=(f.clicks||0)+1; localStorage.setItem('skate_all_links',JSON.stringify(all)); }
+      document.documentElement.innerHTML = `
+      <head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title>
+      <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap');
+      body{margin:0;font-family:Inter,Arial;background:#fff;display:flex;align-items:center;justify-content:center;height:100vh}
+     .box{text-align:center}.line{font-size:14px;color:#1e293b;line-height:38px;font-weight:600}
+     .sub{font-size:11px;color:#94a3b8;margin-top:14px}
+      </style></head>
+      <body><div class="box">
+      <div class="line">🔒 Checking for traffic security...</div>
+      <div class="line" id="l2" style="opacity:.3;transition:.6s">🛡️ Verifying your connection...</div>
+      <div class="line" id="l3" style="opacity:.3;transition:.6s">🛡️ Redirecting...</div>
+      <div class="sub">Secured by SkateCart</div>
+      </div>
+      <script>
+        setTimeout(()=>{ var e=document.getElementById('l2'); if(e) e.style.opacity='1'; },800);
+        setTimeout(()=>{ var e=document.getElementById('l3'); if(e) e.style.opacity='1'; },1600);
+      <\/script></body>`;
+      setTimeout(()=>{ window.location.href = originalUrl; }, 2600);
+    }
+
+    if(f && f.original){
+      showProcessAndGo(f.original);
+      throw new Error("STOP_RENDER");
+    }
+
+    // Dusre phone ke liye database se lao
+    fetch("https://kvdb.io/"+BUCKET+"/"+s, {cache:"no-store"})
+   .then(r=>r.text())
+   .then(url=>{
+      if(url && url.indexOf("http")===0){
+        showProcessAndGo(url);
+      }else{
+        document.documentElement.innerHTML = "<body style='font-family:Arial;display:flex;align-items:center;justify-content:center;height:100vh'>Link not found or expired</body>";
+      }
+    }).catch(()=>{
+      document.documentElement.innerHTML = "<body style='font-family:Arial;display:flex;align-items:center;justify-content:center;height:100vh'>Error loading link</body>";
+    });
+
+    if(!f){
+      document.documentElement.innerHTML = "<body style='font-family:Inter,Arial;display:flex;align-items:center;justify-content:center;height:100vh'>🔒 Loading secure link...</body>";
+      throw new Error("STOP_RENDER");
+    }
+
+  }catch(e){ if(e.message==="STOP_RENDER") throw e; }
+})();
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&display=swap');
 body{margin:0;font-family:Inter,Arial;background:#f0faf9}
@@ -59,13 +120,13 @@ function toggleLog(){
  document.getElementById('policyLabel').style.display=flexDisp;
  document.getElementById('logTitle').innerText=isSignup?'Create Account':'Sign In';
  document.getElementById('logSwitch').innerText=isSignup?'Already have account? Sign In':'New user? Create Account';
- document.getElementById('authBtn').innerText = isSignup ? 'Create Account & Continue' : 'Sign In & Continue';
+ document.getElementById('authBtn').innerText = isSignup? 'Create Account & Continue' : 'Sign In & Continue';
 }
 function sendMail(toEmail,toName){
   emailjs.send("service_wxtih9l", "template_qrvny1f", {
     to_email: toEmail,
     to_name: toName
-  }).then(()=>console.log("Mail sent to "+toEmail+" Name: "+toName)).catch(e=>console.log("Mail Error:",e));
+  }).then(()=>console.log("Mail sent to "+toEmail)).catch(e=>console.log("Mail Error:",e));
 }
 function doAuth(){
  let fName=document.getElementById('fName').value.trim();
@@ -117,7 +178,33 @@ function signOut(){localStorage.removeItem('skate_current');location.reload();}
 let cur=checkLogin();
 if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
 function genID(){return Math.random().toString(36).substring(2,10).toUpperCase();}
-function makeLinks(){let o=document.getElementById('wLink').value.trim();if(!o)return alert("Please paste a link");document.getElementById('genBtn').innerText="Generating...";setTimeout(()=>{let sid=genID();let short=location.origin+location.pathname+"?s="+sid;let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');all.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});localStorage.setItem('skate_all_links',JSON.stringify(all));document.getElementById('shortLink').innerText=short;document.getElementById('readySec').style.display='block';loadR();document.getElementById('genBtn').innerText="Generate Earning Link";},700);}
+function makeLinks(){
+  let o=document.getElementById('wLink').value.trim();
+  if(!o) return alert("Please paste a link");
+  document.getElementById('genBtn').innerText="Generating...";
+  let sid=genID();
+  let BUCKET = "SkateCartPro_786";
+  // ✅ Choti link ko database me save karo taake har phone me chale
+  fetch("https://kvdb.io/"+BUCKET+"/"+sid, {method:'POST', body:o})
+ .then(()=>{
+    let base = location.origin + "/Skatecart/";
+    if(location.origin.includes("null") || location.protocol==="file:") base="https://skatecart.github.io/Skatecart/";
+    // Agar aap thedailyyaha.com par dal rahe ho to base change ho jayega auto
+    if(location.pathname.includes("/Skatecart/")) base = location.origin + "/Skatecart/";
+    let short = base + "r/" + sid;
+    // Local me bhi save karo dashboard ke liye
+    let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+    all.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
+    localStorage.setItem('skate_all_links',JSON.stringify(all));
+    document.getElementById('shortLink').innerText=short;
+    document.getElementById('readySec').style.display='block';
+    loadR();
+    document.getElementById('genBtn').innerText="Generate Earning Link";
+  }).catch(()=>{
+    alert("Internet error - dubara try karo");
+    document.getElementById('genBtn').innerText="Generate Earning Link";
+  });
+}
 function loadR(){
  if(!cur) return;
  let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
@@ -163,8 +250,6 @@ function updatePayout(){
  document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
 }
 function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
-(function(){let p=new URLSearchParams(location.search);let s=p.get('s');let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');if(s){let f=all.find(x=>x.shortId===s);if(f){f.clicks=(f.clicks||0)+1;localStorage.setItem('skate_all_links',JSON.stringify(all));location.href=f.original;}}})();
-if(cur) loadR();
-document.getElementById('dateEnd').valueAsDate=new Date();
+loadR();applyAnalytics();updatePayout();
 </script>
 </body></html>
