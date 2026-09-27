@@ -133,8 +133,7 @@ function makeLinks(){
  document.getElementById('genBtn').innerText="Generating...";
  setTimeout(()=>{
    let sid=genID();
-   let base = location.origin + location.pathname;
-   if(!base.endsWith('/')) base += '/';
+   let base = location.origin + "/Skatecart/";
    let short = base + "r/" + sid;
    let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
    all.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
@@ -190,7 +189,7 @@ function updatePayout(){
  document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
 }
 function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
-// ✅ SIRF R/ WALA SYSTEM - S WALA DELETE KAR DIYA
+// ✅ SIRF R/ WALA FINAL SYSTEM - S WALA DELETE
 (function(){
  let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
  let pathMatch = location.pathname.match(/\/r\/([A-Z0-9]+)/i);
