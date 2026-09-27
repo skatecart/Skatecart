@@ -1,67 +1,6 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkateCart PRO</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>emailjs.init("y5qo1fs87tL0pZihp");</script>
-<script>
-// ✅ FINAL SHORT LINK SYSTEM - CHOTI LINK HAR PHONE ME CHALEGI
-(function(){
-  try{
-    var path = location.pathname;
-    var m = path.match(/\/r\/([A-Z0-9]{6,10})/i);
-    if(!m) return;
-    var s = m[1].toUpperCase();
-    var BUCKET = "SkateCartPro_786";
-    var all = JSON.parse(localStorage.getItem('skate_all_links')||'[]');
-    var f = all.find(x=> (x.shortId||'').toUpperCase()===s);
-
-    function showProcessAndGo(originalUrl){
-      if(f){ f.clicks=(f.clicks||0)+1; localStorage.setItem('skate_all_links',JSON.stringify(all)); }
-      document.documentElement.innerHTML = `
-      <head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title>
-      <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap');
-      body{margin:0;font-family:Inter,Arial;background:#fff;display:flex;align-items:center;justify-content:center;height:100vh}
-     .box{text-align:center}.line{font-size:14px;color:#1e293b;line-height:38px;font-weight:600}
-     .sub{font-size:11px;color:#94a3b8;margin-top:14px}
-      </style></head>
-      <body><div class="box">
-      <div class="line">🔒 Checking for traffic security...</div>
-      <div class="line" id="l2" style="opacity:.3;transition:.6s">🛡️ Verifying your connection...</div>
-      <div class="line" id="l3" style="opacity:.3;transition:.6s">🛡️ Redirecting...</div>
-      <div class="sub">Secured by SkateCart</div>
-      </div>
-      <script>
-        setTimeout(()=>{ var e=document.getElementById('l2'); if(e) e.style.opacity='1'; },800);
-        setTimeout(()=>{ var e=document.getElementById('l3'); if(e) e.style.opacity='1'; },1600);
-      <\/script></body>`;
-      setTimeout(()=>{ window.location.href = originalUrl; }, 2600);
-    }
-
-    if(f && f.original){
-      showProcessAndGo(f.original);
-      throw new Error("STOP_RENDER");
-    }
-
-    // Dusre phone ke liye database se lao
-    fetch("https://kvdb.io/"+BUCKET+"/"+s, {cache:"no-store"})
-   .then(r=>r.text())
-   .then(url=>{
-      if(url && url.indexOf("http")===0){
-        showProcessAndGo(url);
-      }else{
-        document.documentElement.innerHTML = "<body style='font-family:Arial;display:flex;align-items:center;justify-content:center;height:100vh'>Link not found or expired</body>";
-      }
-    }).catch(()=>{
-      document.documentElement.innerHTML = "<body style='font-family:Arial;display:flex;align-items:center;justify-content:center;height:100vh'>Error loading link</body>";
-    });
-
-    if(!f){
-      document.documentElement.innerHTML = "<body style='font-family:Inter,Arial;display:flex;align-items:center;justify-content:center;height:100vh'>🔒 Loading secure link...</body>";
-      throw new Error("STOP_RENDER");
-    }
-
-  }catch(e){ if(e.message==="STOP_RENDER") throw e; }
-})();
-</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&display=swap');
 body{margin:0;font-family:Inter,Arial;background:#f0faf9}
@@ -96,15 +35,17 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <div class="wrap">
 <div id="links" class="page active">
 <div class="payout"><div style="font-weight:900;font-size:18px">💳 Your Payout Dashboard</div>
-<div class="pGrid"><div class="pItem"><b>Current Balance</b><span id="earn">$0.00</span></div><div class="pItem"><b>Total Clicks</b><span id="clicks">0</span></div><div class="pItem sale"><b>Total Sales</b><span id="sales">0 Sales</span></div><div class="pItem sale"><b>Sales Commission</b><span id="saleEarn">$0.00</span></div><div class="pItem"><b>Minimum Payout</b><span>$25.00</span></div><div class="pItem"><b>Status</b><span id="status" style="font-size:12px;color:#facc15">Pending</span></div></div>
+<div class="pGrid"><div class="pItem"><b>Current Balance</b><span id="earn">$0.00</span></div><div class="pItem"><b>Total Clicks</b><span id="clicks">0</span></div><div class="pItem sale"><b>Total Sales</b><span id="sales">0 Sales</span></div><div class="pItem sale"><b>Sales Commission</b><span id="saleEarn">$0.00</span></div><div class="pItem"><b>Minimum Payout</b><span>$25.00</span></div><div class="pItem"><b>Status</b><span id="status" style="font-size:12px;color:#facc15">Pending 45 Days</span></div></div>
 <div class="progress"><div id="pBar" class="bar" style="width:0%"></div></div>
+<div style="display:flex;justify-content:space-between;margin-top:12px;font-size:12px;opacity:.9"><span>Next: <b>1 Oct 2026</b></span><span>Then: <b>15 Oct 2026</b></span></div>
+<div style="margin-top:10px;background:rgba(255,255,255,0.12);border-radius:10px;padding:10px;font-size:11px;line-height:16px">⚠️ <b>System:</b> No per-click earning. 10% commission per sale only. First payout after 45 days verification. Payouts on 1st & 15th every month after $25 min.</div>
 </div>
 <div class="box"><input id="wLink" class="inp" placeholder="Paste Walmart Link..."><button id="genBtn" class="btn" onclick="makeLinks()">Generate Earning Link</button></div>
 <div id="readySec" style="display:none"><div class="box" style="background:#ecfdf5;text-align:center"><h3>🎉 Link Ready!</h3><div class="linkArea" id="shortLink"></div><button class="btn" onclick="copyT('shortLink')">Copy & Share to Earn</button></div></div>
 <div class="box"><div style="font-weight:900;font-size:18px">🔗 Recent Links</div><div id="recent" style="margin-top:10px"></div></div>
 </div>
-<div id="analytics" class="page"><div class="box"><div style="font-weight:900;font-size:20px;text-align:center">📊 Analytics</div><div style="background:#f8fafc;border-radius:14px;padding:14px;margin-top:14px;border:1px solid #eef2f2"><div style="text-align:center;font-size:11px;color:#64748b;font-weight:700;letter-spacing:1px;margin-bottom:8px">TIME PERIOD</div><div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px"><button onclick="setPeriod('7')" id="p7" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Last 7 days</button><button onclick="setPeriod('30')" id="p30" style="padding:8px 14px;border-radius:20px;border:none;background:#2563eb;color:#fff;font-size:12px;font-weight:700">Last 30 days</button><button onclick="setPeriod('custom')" id="pC" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Custom</button></div><div style="display:flex;gap:8px"><input id="dateStart" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"><input id="dateEnd" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"></div><button onclick="applyAnalytics()" class="btn">Apply</button></div><div style="background:#f0fdfa;border-radius:16px;padding:20px;text-align:center;margin-top:14px;border:1px solid #ccfbf1"><div style="font-weight:800;margin:8px 0">Total Clicks: <span id="aClicks">0</span></div><div style="font-weight:800;margin:8px 0">Total Sales: <span id="aSales">0 Sales</span></div><div style="font-weight:900;margin:8px 0;font-size:20px;color:#0f766e">Total Earnings: $<span id="aEarn">0.00</span></div><div style="font-size:12px;color:#64748b;margin-top:8px" id="aLabel">Last 30 days</div></div><div id="aRecent" style="margin-top:10px"></div></div></div>
-<div id="payment" class="page"><div class="box" style="text-align:center"><div style="font-weight:900;font-size:20px">💳 Payouts</div><p style="font-size:13px;color:#64748b">Minimum Payout $25 - 45 Days Pending</p><div style="background:#f0fdfa;padding:20px;border-radius:16px;margin-top:10px;border:1px solid #ccfbf1"><div style="font-size:13px;color:#64748b">Current Balance</div><div style="font-size:32px;font-weight:900;color:#0f766e" id="pEarn">$0.00</div><div class="progress"><div id="pBar2" class="bar" style="width:0%"></div></div><div style="font-size:11px;color:#64748b;margin-top:8px">$<span id="pEarnSmall">0.00</span> / $25.00</div></div><button class="btn" style="opacity:.6">Request Payout (Min $25)</button></div></div>
+<div id="analytics" class="page"><div class="box"><div style="font-weight:900;font-size:20px;text-align:center">📊 Analytics</div><div style="background:#f8fafc;border-radius:14px;padding:14px;margin-top:14px;border:1px solid #eef2f2"><div style="text-align:center;font-size:11px;color:#64748b;font-weight:700;letter-spacing:1px;margin-bottom:8px">TIME PERIOD</div><div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px"><button onclick="setPeriod('7')" id="p7" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Last 7 days</button><button onclick="setPeriod('30')" id="p30" style="padding:8px 14px;border-radius:20px;border:none;background:#2563eb;color:#fff;font-size:12px;font-weight:700">Last 30 days</button><button onclick="setPeriod('custom')" id="pC" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Custom</button></div><div style="display:flex;gap:8px"><input id="dateStart" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"><input id="dateEnd" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"></div><button onclick="applyAnalytics()" class="btn">Apply</button></div><div style="background:#f0fdfa;border-radius:16px;padding:20px;text-align:center;margin-top:14px;border:1px solid #ccfbf1"><div style="font-weight:800;margin:8px 0">Total Clicks: <span id="aClicks">0</span></div><div style="font-weight:800;margin:8px 0">Total Sales: <span id="aSales">0 Sales</span></div><div style="font-weight:900;margin:8px 0;font-size:20px;color:#0f766e">Total Earnings: $<span id="aEarn">0.00</span></div><div style="font-size:12px;color:#64748b;margin-top:8px" id="aLabel">Last 30 days - Sale commission only</div></div><div id="aRecent" style="margin-top:10px"></div></div></div>
+<div id="payment" class="page"><div class="box" style="text-align:center"><div style="font-weight:900;font-size:20px">💳 Payouts</div><p style="font-size:13px;color:#64748b">Minimum Payout $25 - 45 Days Pending - Sale Commission Only</p><div style="background:#f0fdfa;padding:20px;border-radius:16px;margin-top:10px;border:1px solid #ccfbf1"><div style="font-size:13px;color:#64748b">Current Balance (Sales Only)</div><div style="font-size:32px;font-weight:900;color:#0f766e" id="pEarn">$0.00</div><div class="progress"><div id="pBar2" class="bar" style="width:0%"></div></div><div style="font-size:11px;color:#64748b;margin-top:8px">$<span id="pEarnSmall">0.00</span> / $25.00</div></div><button class="btn" style="opacity:.6">Request Payout (Min $25)</button></div></div>
 <div id="history" class="page"><div class="box" style="text-align:center"><div style="font-weight:900;font-size:20px">📜 Payment History</div><p style="font-size:13px;color:#999;margin-top:20px">No payment history yet.<br>Your payouts will show here after 45 days.</p></div></div>
 <div class="footerZy">© 2026 SkateCart. All rights reserved.</div>
 </div>
@@ -123,10 +64,7 @@ function toggleLog(){
  document.getElementById('authBtn').innerText = isSignup? 'Create Account & Continue' : 'Sign In & Continue';
 }
 function sendMail(toEmail,toName){
-  emailjs.send("service_wxtih9l", "template_qrvny1f", {
-    to_email: toEmail,
-    to_name: toName
-  }).then(()=>console.log("Mail sent to "+toEmail)).catch(e=>console.log("Mail Error:",e));
+  emailjs.send("service_wxtih9l", "template_qrvny1f", { to_email: toEmail, to_name: toName }).then(()=>console.log("Mail sent")).catch(e=>console.log(e));
 }
 function doAuth(){
  let fName=document.getElementById('fName').value.trim();
@@ -177,33 +115,22 @@ function showPage(id,el){
 function signOut(){localStorage.removeItem('skate_current');location.reload();}
 let cur=checkLogin();
 if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
-function genID(){return Math.random().toString(36).substring(2,10).toUpperCase();}
 function makeLinks(){
   let o=document.getElementById('wLink').value.trim();
   if(!o) return alert("Please paste a link");
   document.getElementById('genBtn').innerText="Generating...";
-  let sid=genID();
-  let BUCKET = "SkateCartPro_786";
-  // ✅ Choti link ko database me save karo taake har phone me chale
-  fetch("https://kvdb.io/"+BUCKET+"/"+sid, {method:'POST', body:o})
- .then(()=>{
-    let base = location.origin + "/Skatecart/";
-    if(location.origin.includes("null") || location.protocol==="file:") base="https://skatecart.github.io/Skatecart/";
-    // Agar aap thedailyyaha.com par dal rahe ho to base change ho jayega auto
-    if(location.pathname.includes("/Skatecart/")) base = location.origin + "/Skatecart/";
-    let short = base + "r/" + sid;
-    // Local me bhi save karo dashboard ke liye
-    let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
-    all.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
-    localStorage.setItem('skate_all_links',JSON.stringify(all));
-    document.getElementById('shortLink').innerText=short;
-    document.getElementById('readySec').style.display='block';
-    loadR();
-    document.getElementById('genBtn').innerText="Generate Earning Link";
-  }).catch(()=>{
-    alert("Internet error - dubara try karo");
-    document.getElementById('genBtn').innerText="Generate Earning Link";
-  });
+  let b64=btoa(o).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  let base = location.origin + "/Skatecart/";
+  if(location.origin.includes("null") || location.protocol==="file:") base="https://skatecart.github.io/Skatecart/";
+  if(location.pathname.includes("/Skatecart/")) base = location.origin + "/Skatecart/";
+  let short = base + "r/" + b64;
+  let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+  all.push({shortId:b64,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
+  localStorage.setItem('skate_all_links',JSON.stringify(all));
+  document.getElementById('shortLink').innerText=short;
+  document.getElementById('readySec').style.display='block';
+  loadR();
+  document.getElementById('genBtn').innerText="Generate Earning Link";
 }
 function loadR(){
  if(!cur) return;
@@ -212,7 +139,7 @@ function loadR(){
  let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
  let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
  let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
- let total=clicks*0.25+saleComm;
+ let total=saleComm;
  document.getElementById('clicks').innerText=clicks;
  document.getElementById('sales').innerText=sales+" Sales";
  document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2);
@@ -224,9 +151,9 @@ function setPeriod(type){
  document.getElementById('p7').style.background='#fff'; document.getElementById('p7').style.color='#000'; document.getElementById('p7').style.border='1px solid #e2e8f0';
  document.getElementById('p30').style.background='#fff'; document.getElementById('p30').style.color='#000'; document.getElementById('p30').style.border='1px solid #e2e8f0';
  document.getElementById('pC').style.background='#fff'; document.getElementById('pC').style.color='#000'; document.getElementById('pC').style.border='1px solid #e2e8f0';
- if(type=='7'){ document.getElementById('p7').style.background='#2563eb'; document.getElementById('p7').style.color='#fff'; document.getElementById('p7').style.border='none'; document.getElementById('aLabel').innerText='Last 7 days'; }
- if(type=='30'){ document.getElementById('p30').style.background='#2563eb'; document.getElementById('p30').style.color='#fff'; document.getElementById('p30').style.border='none'; document.getElementById('aLabel').innerText='Last 30 days'; }
- if(type=='custom'){ document.getElementById('pC').style.background='#2563eb'; document.getElementById('pC').style.color='#fff'; document.getElementById('pC').style.border='none'; document.getElementById('aLabel').innerText='Custom Date'; }
+ if(type=='7'){ document.getElementById('p7').style.background='#2563eb'; document.getElementById('p7').style.color='#fff'; document.getElementById('p7').style.border='none'; document.getElementById('aLabel').innerText='Last 7 days - Sale only'; }
+ if(type=='30'){ document.getElementById('p30').style.background='#2563eb'; document.getElementById('p30').style.color='#fff'; document.getElementById('p30').style.border='none'; document.getElementById('aLabel').innerText='Last 30 days - Sale only'; }
+ if(type=='custom'){ document.getElementById('pC').style.background='#2563eb'; document.getElementById('pC').style.color='#fff'; document.getElementById('pC').style.border='none'; document.getElementById('aLabel').innerText='Custom Date - Sale only'; }
 }
 function applyAnalytics(){
  if(!cur) return;
@@ -234,7 +161,7 @@ function applyAnalytics(){
  let mine=all.filter(x=>x.owner===cur.email);
  let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
  let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
- let earn=clicks*0.25 + mine.reduce((a,b)=>a+(b.saleAmount||0),0);
+ let earn=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
  document.getElementById('aClicks').innerText=clicks;
  document.getElementById('aSales').innerText=sales+" Sales";
  document.getElementById('aEarn').innerText=earn.toFixed(2);
@@ -244,7 +171,7 @@ function updatePayout(){
  if(!cur) return;
  let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
  let mine=all.filter(x=>x.owner===cur.email);
- let total=mine.reduce((a,b)=>a+(b.clicks||0),0)*0.25;
+ let total=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
  document.getElementById('pEarn').innerText="$"+total.toFixed(2);
  document.getElementById('pEarnSmall').innerText=total.toFixed(2);
  document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
