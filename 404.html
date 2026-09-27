@@ -1,47 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Redirecting...</title>
-<style>
-body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;background:#fff;font-family:Arial,sans-serif}
-.box{text-align:center;line-height:32px}
-.loader{width:40px;height:40px;border:4px solid #eee;border-top:4px solid #0071dc;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}
-@keyframes spin{100%{transform:rotate(360deg)}}
-#msg{color:#d00;margin-top:15px;font-weight:bold}
-</style>
-</head>
-<body>
-<div class="box">
-<div class="loader"></div>
-<div>🔒 Checking for traffic security...</div>
-<div>🛡️ Verifying your connection...</div>
-<div>🚀 Redirecting to Walmart...</div>
-<div id="msg"></div>
-</div>
-<script>
-var code = location.pathname.split("/").pop().split("?")[0].trim();
-var BUCKET = "https://kvdb.io/3QJ4bF5g6h7j8k9l0m1n2o3p4q5r6s7t8"; // <<-- اپنا نیا Bucket یہاں ڈالو
-
-if(!code || code=="r" || code=="Skatecart"){
-  document.getElementById("msg").innerText = "No Code Found";
-} else {
-  fetch(BUCKET+"/"+code)
- .then(r=>r.text())
- .then(link=>{
-    link = link.trim().replace(/"/g,'');
-    // بہترین چیک
-    if(link.startsWith("https://") && link.length > 15){
-      window.location.replace(link);
-    } else {
-      document.getElementById("msg").innerText = "Invalid Link: "+code+" - ڈیش بورڈ سے نیا لنک بناؤ";
-    }
-  })
- .catch(()=>{
-    document.getElementById("msg").innerText = "Bucket Error - نیا Bucket بناؤ";
-  });
-}
-</script>
-</body>
-</html>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title><style>body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;font-family:Arial}.box{text-align:center}</style></head><body><div class="box"><div>🔒 Checking for traffic security...</div><div>🛡️ Verifying your connection...</div><div>🚀 Redirecting to Walmart...</div><div id="msg" style="color:red;margin-top:10px"></div></div><script>
+var BUCKET = "YAHAN_APNA_NAYA_KVDB_LINK_DALO"; // <-- YAHAN
+var code = location.pathname.split("/").pop().split("?")[0];
+fetch(BUCKET+"/"+code).then(r=>r.text()).then(l=>{
+  l=l.trim().replace(/"/g,'');
+  if(l.startsWith("http")) location.replace(l);
+  else document.getElementById("msg").innerText="Invalid Link: "+code+" - Dashboard se naya link banao";
+});
+</script></body></html>
