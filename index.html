@@ -1,4 +1,14 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkateCart PRO</title>
+<!DOCTYPE html><html><head>
+<script>
+(function(){
+  var redirect = sessionStorage.redirect;
+  delete sessionStorage.redirect;
+  if (redirect && redirect != location.href) {
+    history.replaceState(null, "", redirect);
+  }
+})();
+</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkateCart PRO</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>emailjs.init("y5qo1fs87tL0pZihp");</script>
 <style>
