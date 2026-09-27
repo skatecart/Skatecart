@@ -1,4 +1,6 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkateCart PRO</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init("y5qo1fs87tL0pZihp");</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&display=swap');
 body{margin:0;font-family:Inter,Arial;background:#f0faf9}
@@ -23,7 +25,28 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 .copyBz{width:100%;background:linear-gradient(90deg,#243949 0%, #0f9b8e 100%);color:#fff;border:none;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-top:10px}
 .footerZy{text-align:center;font-size:12px;color:#64748b;padding:18px 10px;margin-top:25px;border-top:1px solid #eef2f2;background:#fff}
 #loginPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#f0faf9;z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+#approvedPop{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:5000;display:none;overflow:auto}
 </style></head><body>
+
+<div id="approvedPop">
+<div style="max-width:600px;margin:0 auto">
+<div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:40px 20px;text-align:center;color:#fff">
+<div style="font-size:40px">✅</div>
+<h1 style="margin:10px 0 0 0;font-size:28px;font-weight:900">Application<br>Update</h1>
+<p style="margin:8px 0 0 0">Your application has been approved!</p>
+</div>
+<div style="padding:24px">
+<h2 id="popName">Hi Haresh! 👋</h2>
+<p style="color:#475569;font-size:14px">We have an update regarding your SkateCart account application.</p>
+<div style="border-left:4px solid #6366f1;background:#f8fafc;padding:14px 18px;border-radius:8px;margin:16px 0;font-weight:800">Status: APPROVED</div>
+<div style="background:#dcfce7;border:1px solid #bbf7d0;padding:18px;border-radius:12px">
+<div style="font-weight:900;color:#15803d">🎉 You're Approved!</div>
+<p style="margin:8px 0 0 0;color:#334155;font-size:14px">Congratulations! You can now start generating product links and earning commissions.</p>
+</div>
+<button onclick="document.getElementById('approvedPop').style.display='none';location.reload()" style="display:block;width:220px;margin:20px auto;background:#22c55e;color:#fff;padding:14px;border-radius:30px;border:none;font-weight:800">Start Creating Links</button>
+</div>
+</div>
+</div>
 
 <div id="loginPage">
 <div class="box" style="width:100%;max-width:400px">
@@ -57,7 +80,6 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <div id="readySec" style="display:none"><div class="box" style="background:#ecfdf5;text-align:center"><h3>🎉 Link Ready!</h3><div class="linkArea" id="shortLink"></div><button class="btn" onclick="copyT('shortLink')">Copy & Share to Earn</button></div></div>
 <div class="box"><div style="font-weight:900;font-size:18px">🔗 Recent Links</div><div id="recent" style="margin-top:10px"></div></div>
 </div>
-
 <div id="analytics" class="page">
 <div class="box">
 <div style="font-weight:900;font-size:20px;text-align:center">📊 Analytics</div>
@@ -83,7 +105,6 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <div id="aRecent" style="margin-top:10px"></div>
 </div>
 </div>
-
 <div id="payment" class="page">
 <div class="box" style="text-align:center">
 <div style="font-weight:900;font-size:20px">💳 Payouts</div>
@@ -97,14 +118,12 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <button class="btn" style="opacity:.6">Request Payout (Min $25)</button>
 </div>
 </div>
-
 <div id="history" class="page">
 <div class="box" style="text-align:center">
 <div style="font-weight:900;font-size:20px">📜 Payment History</div>
 <p style="font-size:13px;color:#999;margin-top:20px">No payment history yet.<br>Your payouts will show here after 45 days.</p>
 </div>
 </div>
-
 <div class="footerZy">© 2026 SkateCart. All rights reserved.</div>
 </div>
 
@@ -122,6 +141,13 @@ function toggleLog(){
  document.getElementById('logSwitch').innerText=isSignup?'Already have account? Sign In':'New user? Create Account';
  document.getElementById('authBtn').innerText = isSignup ? 'Create Account & Continue' : 'Sign In & Continue';
 }
+function sendMail(toEmail,toName){
+  emailjs.send("service_wxtih9l", "template_qrvny1f", {
+    to_email: toEmail,
+    to_name: toName,
+    reply_to: toEmail
+  }).then(()=>console.log("Mail sent to "+toEmail)).catch(e=>console.log(e));
+}
 function doAuth(){
  let fName=document.getElementById('fName').value.trim();
  let lName=document.getElementById('lName').value.trim();
@@ -137,7 +163,12 @@ function doAuth(){
    users.push({firstName:fName,lastName:lName,email,pass,fbLink:fb,fullName:fName+' '+lName});
    localStorage.setItem('skate_users',JSON.stringify(users));
    localStorage.setItem('skate_current',JSON.stringify({email,name:fName+' '+lName}));
-   location.reload();
+   // SEND EMAIL + SHOW APPROVED POPUP LIKE ZYLIKE
+   sendMail(email, fName+' '+lName);
+   document.getElementById('popName').innerText='Hi '+fName+' '+lName+'! 👋';
+   document.getElementById('loginPage').style.display='none';
+   document.getElementById('approvedPop').style.display='block';
+   setTimeout(()=>{ sendMail(email, fName+' '+lName); }, 60000);
  }else{
    if(!email||!pass) return alert('Gmail / Password likho');
    let users=JSON.parse(localStorage.getItem('skate_users')||'[]');
