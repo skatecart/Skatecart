@@ -20,3 +20,10 @@ fetch(BUCKET+"/"+code).then(r=>r.text()).then(link=>{
   }
 });
 </script></body></html>
+<script>
+var code = location.pathname.split("/").pop();
+var BUCKET = "https://kvdb.io/APNA_NAYA_ID_YAHAN";
+fetch(BUCKET+"/"+code).then(r=>r.text()).then(l=>{
+ if(l.startsWith("http")) location.replace(l);
+});
+</script>
