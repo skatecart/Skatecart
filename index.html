@@ -1,5 +1,6 @@
 <!DOCTYPE html><html><head>
 <script>
+// 404 se wapas lane ke liye - ye lazmi hai
 (function(){
   var redirect = sessionStorage.redirect;
   delete sessionStorage.redirect;
@@ -9,7 +10,7 @@
 })();
 </script>
 <script>
-// ✅ COATING - AAPKI PURANI CODING KE SATH ATTACHED
+// ✅ FINAL COATING - AAPKI PURANI CODING KE SATH ATTACHED - DUSRE PHONE ME BHI CHALEGA
 (function(){
   try{
     var pathMatch = location.pathname.match(/\/r\/([A-Z0-9]+)/i) || location.href.match(/\/r\/([A-Z0-9]+)/i);
@@ -17,11 +18,22 @@
     var all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
     var s = pathMatch[1];
     var f = all.find(x=>x.shortId.toUpperCase()===s.toUpperCase());
-    if(!f) return; // link is phone me nahi hai to dashboard khulega
-    f.clicks=(f.clicks||0)+1;
-    localStorage.setItem('skate_all_links',JSON.stringify(all));
+    var originalUrl = f? f.original : null;
+
+    // Agar is phone me link save nahi hai to URL ke?u= se nikalo
+    if(!originalUrl){
+      try{
+        var params = new URLSearchParams(location.search);
+        var u = params.get('u');
+        if(u){ originalUrl = atob(u); }
+      }catch(e){}
+    }
+    if(!originalUrl) return;
+
+    if(f){ f.clicks=(f.clicks||0)+1; localStorage.setItem('skate_all_links',JSON.stringify(all)); }
+
     document.documentElement.innerHTML = `<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title></head><body style="margin:0;font-family:Inter,Arial;background:#fff;display:flex;align-items:center;justify-content:center;height:100vh;"><div style="text-align:center;line-height:38px;font-size:13px;color:#333;"><div>🔒 Checking for traffic security...</div><div id="l2" style="opacity:.35;transition:.5s">🛡️ Verifying your connection...</div><div id="l3" style="opacity:.35;transition:.5s">🛡️ Redirecting...</div></div><script>setTimeout(()=>document.getElementById('l2').style.opacity='1',800);setTimeout(()=>document.getElementById('l3').style.opacity='1',1600);<\/script></body>`;
-    setTimeout(()=>{ window.location.href = f.original; }, 2500);
+    setTimeout(()=>{ window.location.href = originalUrl; }, 2500);
     throw new Error("STOP_RENDER");
   }catch(e){ if(e.message==="STOP_RENDER") throw e; }
 })();
@@ -77,73 +89,15 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 </div>
 <script>
 let isSignup=true;
-function toggleLog(){
- isSignup=!isSignup;
- let disp=isSignup?'block':'none';
- let flexDisp=isSignup?'flex':'none';
- document.getElementById('fName').style.display=disp;
- document.getElementById('lName').style.display=disp;
- document.getElementById('fbLink').style.display=disp;
- document.getElementById('policyLabel').style.display=flexDisp;
- document.getElementById('logTitle').innerText=isSignup?'Create Account':'Sign In';
- document.getElementById('logSwitch').innerText=isSignup?'Already have account? Sign In':'New user? Create Account';
- document.getElementById('authBtn').innerText = isSignup? 'Create Account & Continue' : 'Sign In & Continue';
-}
-function sendMail(toEmail,toName){
-  emailjs.send("service_wxtih9l", "template_qrvny1f", {
-    to_email: toEmail,
-    to_name: toName
-  }).then(()=>console.log("Mail sent to "+toEmail+" Name: "+toName)).catch(e=>console.log("Mail Error:",e));
-}
-function doAuth(){
- let fName=document.getElementById('fName').value.trim();
- let lName=document.getElementById('lName').value.trim();
- let email=document.getElementById('lEmail').value.trim().toLowerCase();
- let pass=document.getElementById('lPass').value.trim();
- let fb=document.getElementById('fbLink').value.trim();
- if(isSignup){
-   if(!fName||!lName||!email||!pass||!fb) return alert('Bhai First Name, Last Name, Gmail, Password, Facebook Link sab likhna lazmi hai');
-   if(!fb.includes('facebook.com')) return alert('Sahi Facebook Group Link dalo bhai');
-   if(!document.getElementById('policyCheck').checked) return alert('Policy ko Agree karo bhai');
-   let users=JSON.parse(localStorage.getItem('skate_users')||'[]');
-   if(users.find(u=>u.email===email)) return alert('Ye Gmail pehle se hai');
-   users.push({firstName:fName,lastName:lName,email,pass,fbLink:fb,fullName:fName+' '+lName});
-   localStorage.setItem('skate_users',JSON.stringify(users));
-   localStorage.setItem('skate_current',JSON.stringify({email,name:fName+' '+lName}));
-   sendMail(email, fName+' '+lName);
-   document.getElementById('popName').innerText='Hi '+fName+' '+lName+'! 👋';
-   document.getElementById('loginPage').style.display='none';
-   document.getElementById('approvedPop').style.display='block';
- }else{
-   if(!email||!pass) return alert('Gmail / Password likho');
-   let users=JSON.parse(localStorage.getItem('skate_users')||'[]');
-   let f=users.find(u=>u.email===email && u.pass===pass);
-   if(!f) return alert('Gmail ya Password galat hai');
-   localStorage.setItem('skate_current',JSON.stringify({email:f.email,name:f.fullName}));
-   location.reload();
- }
-}
-function checkLogin(){
- let curStr=localStorage.getItem('skate_current');
- if(!curStr){document.getElementById('loginPage').style.display='flex';return null;}
- document.getElementById('loginPage').style.display='none';
- return JSON.parse(curStr);
-}
+function toggleLog(){ isSignup=!isSignup; let disp=isSignup?'block':'none'; let flexDisp=isSignup?'flex':'none'; document.getElementById('fName').style.display=disp; document.getElementById('lName').style.display=disp; document.getElementById('fbLink').style.display=disp; document.getElementById('policyLabel').style.display=flexDisp; document.getElementById('logTitle').innerText=isSignup?'Create Account':'Sign In'; document.getElementById('logSwitch').innerText=isSignup?'Already have account? Sign In':'New user? Create Account'; document.getElementById('authBtn').innerText = isSignup? 'Create Account & Continue' : 'Sign In & Continue'; }
+function sendMail(toEmail,toName){ emailjs.send("service_wxtih9l", "template_qrvny1f", { to_email: toEmail, to_name: toName }).then(()=>console.log("Mail sent")).catch(e=>console.log(e)); }
+function doAuth(){ let fName=document.getElementById('fName').value.trim(); let lName=document.getElementById('lName').value.trim(); let email=document.getElementById('lEmail').value.trim().toLowerCase(); let pass=document.getElementById('lPass').value.trim(); let fb=document.getElementById('fbLink').value.trim(); if(isSignup){ if(!fName||!lName||!email||!pass||!fb) return alert('Bhai First Name, Last Name, Gmail, Password, Facebook Link sab likhna lazmi hai'); if(!fb.includes('facebook.com')) return alert('Sahi Facebook Group Link dalo bhai'); if(!document.getElementById('policyCheck').checked) return alert('Policy ko Agree karo bhai'); let users=JSON.parse(localStorage.getItem('skate_users')||'[]'); if(users.find(u=>u.email===email)) return alert('Ye Gmail pehle se hai'); users.push({firstName:fName,lastName:lName,email,pass,fbLink:fb,fullName:fName+' '+lName}); localStorage.setItem('skate_users',JSON.stringify(users)); localStorage.setItem('skate_current',JSON.stringify({email,name:fName+' '+lName})); sendMail(email, fName+' '+lName); document.getElementById('popName').innerText='Hi '+fName+' '+lName+'! 👋'; document.getElementById('loginPage').style.display='none'; document.getElementById('approvedPop').style.display='block'; }else{ if(!email||!pass) return alert('Gmail / Password likho'); let users=JSON.parse(localStorage.getItem('skate_users')||'[]'); let f=users.find(u=>u.email===email && u.pass===pass); if(!f) return alert('Gmail ya Password galat hai'); localStorage.setItem('skate_current',JSON.stringify({email:f.email,name:f.fullName})); location.reload(); } }
+function checkLogin(){ let curStr=localStorage.getItem('skate_current'); if(!curStr){document.getElementById('loginPage').style.display='flex';return null;} document.getElementById('loginPage').style.display='none'; return JSON.parse(curStr); }
 function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('show')}
 function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
-function showPage(id,el){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- let target=document.getElementById(id);
- if(target) target.classList.add('active');
- document.querySelectorAll('.mItem').forEach(m=>m.classList.remove('active'));
- if(el) el.classList.add('active');
- closeMenu();
- if(id==='analytics') applyAnalytics();
- if(id==='payment') updatePayout();
-}
+function showPage(id,el){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); let target=document.getElementById(id); if(target) target.classList.add('active'); document.querySelectorAll('.mItem').forEach(m=>m.classList.remove('active')); if(el) el.classList.add('active'); closeMenu(); if(id==='analytics') applyAnalytics(); if(id==='payment') updatePayout(); }
 function signOut(){localStorage.removeItem('skate_current');location.reload();}
-let cur=checkLogin();
-if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
+let cur=checkLogin(); if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
 function genID(){return Math.random().toString(36).substring(2,10).toUpperCase();}
 function makeLinks(){
  let o=document.getElementById('wLink').value.trim();
@@ -152,7 +106,8 @@ function makeLinks(){
  setTimeout(()=>{
    let sid=genID();
    let base = location.origin + "/Skatecart/";
-   let short = base + "r/" + sid;
+   let encoded = btoa(o);
+   let short = base + "r/" + sid + "?u=" + encoded;
    let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
    all.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
    localStorage.setItem('skate_all_links',JSON.stringify(all));
@@ -162,52 +117,11 @@ function makeLinks(){
    document.getElementById('genBtn').innerText="Generate Earning Link";
  },700);
 }
-function loadR(){
- if(!cur) return;
- let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
- let mine=all.filter(x=>x.owner===cur.email).reverse();
- let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
- let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
- let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
- let total=clicks*0.25+saleComm;
- document.getElementById('clicks').innerText=clicks;
- document.getElementById('sales').innerText=sales+" Sales";
- document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2);
- document.getElementById('earn').innerText="$"+total.toFixed(2);
- document.getElementById('pBar').style.width=Math.min((total/25)*100,100)+"%";
- let h="";mine.forEach((mm,idx)=>{let num=mine.length-idx; h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="font-weight:800;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b;margin:6px 0 0 36px">🔗 Created ${mm.date}</div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');this.innerText='Copied!';setTimeout(()=>this.innerText='Copy',1500)">Copy</button></div>`;});document.getElementById('recent').innerHTML=h||"<p style='text-align:center;color:#999'>No links yet</p>";
-}
-function setPeriod(type){
- document.getElementById('p7').style.background='#fff'; document.getElementById('p7').style.color='#000'; document.getElementById('p7').style.border='1px solid #e2e8f0';
- document.getElementById('p30').style.background='#fff'; document.getElementById('p30').style.color='#000'; document.getElementById('p30').style.border='1px solid #e2e8f0';
- document.getElementById('pC').style.background='#fff'; document.getElementById('pC').style.color='#000'; document.getElementById('pC').style.border='1px solid #e2e8f0';
- if(type=='7'){ document.getElementById('p7').style.background='#2563eb'; document.getElementById('p7').style.color='#fff'; document.getElementById('p7').style.border='none'; document.getElementById('aLabel').innerText='Last 7 days'; }
- if(type=='30'){ document.getElementById('p30').style.background='#2563eb'; document.getElementById('p30').style.color='#fff'; document.getElementById('p30').style.border='none'; document.getElementById('aLabel').innerText='Last 30 days'; }
- if(type=='custom'){ document.getElementById('pC').style.background='#2563eb'; document.getElementById('pC').style.color='#fff'; document.getElementById('pC').style.border='none'; document.getElementById('aLabel').innerText='Custom Date'; }
-}
-function applyAnalytics(){
- if(!cur) return;
- let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
- let mine=all.filter(x=>x.owner===cur.email);
- let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
- let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
- let earn=clicks*0.25 + mine.reduce((a,b)=>a+(b.saleAmount||0),0);
- document.getElementById('aClicks').innerText=clicks;
- document.getElementById('aSales').innerText=sales+" Sales";
- document.getElementById('aEarn').innerText=earn.toFixed(2);
- document.getElementById('aRecent').innerHTML=document.getElementById('recent').innerHTML;
-}
-function updatePayout(){
- if(!cur) return;
- let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
- let mine=all.filter(x=>x.owner===cur.email);
- let total=mine.reduce((a,b)=>a+(b.clicks||0),0)*0.25;
- document.getElementById('pEarn').innerText="$"+total.toFixed(2);
- document.getElementById('pEarnSmall').innerText=total.toFixed(2);
- document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
-}
+function loadR(){ if(!cur) return; let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]'); let mine=all.filter(x=>x.owner===cur.email).reverse(); let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0); let sales=mine.reduce((a,b)=>a+(b.sales||0),0); let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0); let total=clicks*0.25+saleComm; document.getElementById('clicks').innerText=clicks; document.getElementById('sales').innerText=sales+" Sales"; document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2); document.getElementById('earn').innerText="$"+total.toFixed(2); document.getElementById('pBar').style.width=Math.min((total/25)*100,100)+"%"; let h="";mine.forEach((mm,idx)=>{let num=mine.length-idx; h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="font-weight:800;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b;margin:6px 0 0 36px">🔗 Created ${mm.date}</div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');this.innerText='Copied!';setTimeout(()=>this.innerText='Copy',1500)">Copy</button></div>`;});document.getElementById('recent').innerHTML=h||"<p style='text-align:center;color:#999'>No links yet</p>"; }
+function setPeriod(type){ document.getElementById('p7').style.background='#fff'; document.getElementById('p7').style.color='#000'; document.getElementById('p7').style.border='1px solid #e2e8f0'; document.getElementById('p30').style.background='#fff'; document.getElementById('p30').style.color='#000'; document.getElementById('p30').style.border='1px solid #e2e8f0'; document.getElementById('pC').style.background='#fff'; document.getElementById('pC').style.color='#000'; document.getElementById('pC').style.border='1px solid #e2e8f0'; if(type=='7'){ document.getElementById('p7').style.background='#2563eb'; document.getElementById('p7').style.color='#fff'; document.getElementById('p7').style.border='none'; document.getElementById('aLabel').innerText='Last 7 days'; } if(type=='30'){ document.getElementById('p30').style.background='#2563eb'; document.getElementById('p30').style.color='#fff'; document.getElementById('p30').style.border='none'; document.getElementById('aLabel').innerText='Last 30 days'; } if(type=='custom'){ document.getElementById('pC').style.background='#2563eb'; document.getElementById('pC').style.color='#fff'; document.getElementById('pC').style.border='none'; document.getElementById('aLabel').innerText='Custom Date'; } }
+function applyAnalytics(){ if(!cur) return; let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]'); let mine=all.filter(x=>x.owner===cur.email); let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0); let sales=mine.reduce((a,b)=>a+(b.sales||0),0); let earn=clicks*0.25 + mine.reduce((a,b)=>a+(b.saleAmount||0),0); document.getElementById('aClicks').innerText=clicks; document.getElementById('aSales').innerText=sales+" Sales"; document.getElementById('aEarn').innerText=earn.toFixed(2); document.getElementById('aRecent').innerHTML=document.getElementById('recent').innerHTML; }
+function updatePayout(){ if(!cur) return; let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]'); let mine=all.filter(x=>x.owner===cur.email); let total=mine.reduce((a,b)=>a+(b.clicks||0),0)*0.25; document.getElementById('pEarn').innerText="$"+total.toFixed(2); document.getElementById('pEarnSmall').innerText=total.toFixed(2); document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%"; }
 function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
 if(cur) loadR();
-document.getElementById('dateEnd').valueAsDate=new Date();
 </script>
 </body></html>
