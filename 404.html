@@ -13,20 +13,22 @@ body{margin:0;height:100vh;display:flex;justify-content:center;align-items:cente
 <div class="box">
 <div>🔒 Checking for traffic security...</div>
 <div>🛡️ Verifying your connection...</div>
-<div>🛡️ Redirecting...</div>
+<div>🛡️ Redirecting to Walmart...</div>
 <div id="s" style="font-size:12px;color:#999;margin-top:10px"></div>
 </div>
 <script>
 var c=location.pathname.split('/').pop().split('?')[0];
-var K="https://kvdb.io/SkQ7vB9p2R4t6Y8w";
+var K="https://kvdb.io/A1C8F2B0-9E4D-4F6A-8B2C-7D1E9F0A2B3C";
 fetch(K+"/"+c).then(r=>r.text()).then(u=>{
   u=u.trim().replace(/"/g,'');
-  if(u.indexOf("walmart.com")>-1){
+  if(u && u.length > 5){
     if(u.indexOf("http")!==0) u="https://"+u;
     setTimeout(()=>{location.replace(u)},1200);
   }else{
-    document.getElementById("s").innerText="Invalid link: "+c;
+    document.getElementById("s").innerText="Invalid or Expired Link: "+c;
   }
+}).catch(()=>{
+  document.getElementById("s").innerText="Link Expired, Please Create New Link";
 });
 </script>
 </body>
