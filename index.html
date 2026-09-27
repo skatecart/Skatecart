@@ -190,14 +190,12 @@ function updatePayout(){
  document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
 }
 function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
+// ✅ SIRF R/ WALA SYSTEM - S WALA DELETE KAR DIYA
 (function(){
  let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
- let s = null;
- let p=new URLSearchParams(location.search);
- if(p.get('s')) s = p.get('s');
  let pathMatch = location.pathname.match(/\/r\/([A-Z0-9]+)/i);
- if(pathMatch) s = pathMatch[1];
- if(s){
+ if(pathMatch){
+   let s = pathMatch[1];
    let f=all.find(x=>x.shortId.toUpperCase()===s.toUpperCase());
    if(f){
      f.clicks=(f.clicks||0)+1;
