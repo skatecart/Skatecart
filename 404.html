@@ -1,24 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Skatecart Link Generator</title>
-<style>body{font-family:Arial;padding:20px;max-width:600px;margin:auto}input{width:100%;padding:14px;margin:10px 0;box-sizing:border-box}button{padding:14px;background:#0071dc;color:#fff;border:0;cursor:pointer;width:100%;font-size:16px}#result{margin-top:20px;word-break:break-all;background:#f2f8ff;padding:15px;border-radius:8px}</style>
-</head>
-<body>
-<h2>Skatecart Walmart Link Generator</h2>
-<input id="longUrl" type="url" placeholder="Paste Walmart Link Here..." />
-<button onclick="makeLink()">Generate Short Link</button>
-<div id="result"></div>
-<script>
-function makeLink(){
-  var url = document.getElementById("longUrl").value.trim();
-  if(!url.startsWith("http")){ alert("Please enter valid Walmart http link"); return; }
-  var b64 = btoa(url).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/,'');
-  var shortUrl = "https://skatecart.github.io/Skatecart/r/" + b64;
-  document.getElementById("result").innerHTML = '<b>Your Ready Link:</b><br><a href="'+shortUrl+'" target="_blank">'+shortUrl+'</a><br><br><button onclick="navigator.clipboard.writeText(\''+shortUrl+'\')">Copy Link</button>';
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting to Walmart...</title><style>body{margin:0;height:100vh;display:flex;justify-content:center;align-items:center;font-family:Arial;background:#fff}.box{text-align:center;line-height:34px}.loader{width:42px;height:42px;border:4px solid #eee;border-top:4px solid #0071dc;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="box"><div class="loader"></div><div>🔒 Checking for traffic security...</div><div>🛡️ Verifying your connection...</div><div>🚀 Redirecting to Walmart...</div></div><script>
+var code=location.pathname.split("/").pop().split("?")[0].trim();
+if(code && code!=="r" && code!=="Skatecart"){
+ try{
+  var b64=code.replace(/-/g,'+').replace(/_/g,'/');
+  while(b64.length%4)b64+='=';
+  var link=atob(b64);
+  if(link.startsWith("http")){
+    setTimeout(function(){ location.replace(link); }, 1500);
+  }
+ }catch(e){}
 }
-</script>
-</body>
-</html>
+</script></body></html>
