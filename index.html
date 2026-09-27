@@ -8,6 +8,24 @@
   }
 })();
 </script>
+<script>
+// ✅ COATING - AAPKI PURANI CODING KE SATH ATTACHED
+(function(){
+  try{
+    var pathMatch = location.pathname.match(/\/r\/([A-Z0-9]+)/i) || location.href.match(/\/r\/([A-Z0-9]+)/i);
+    if(!pathMatch) return;
+    var all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+    var s = pathMatch[1];
+    var f = all.find(x=>x.shortId.toUpperCase()===s.toUpperCase());
+    if(!f) return; // link is phone me nahi hai to dashboard khulega
+    f.clicks=(f.clicks||0)+1;
+    localStorage.setItem('skate_all_links',JSON.stringify(all));
+    document.documentElement.innerHTML = `<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title></head><body style="margin:0;font-family:Inter,Arial;background:#fff;display:flex;align-items:center;justify-content:center;height:100vh;"><div style="text-align:center;line-height:38px;font-size:13px;color:#333;"><div>🔒 Checking for traffic security...</div><div id="l2" style="opacity:.35;transition:.5s">🛡️ Verifying your connection...</div><div id="l3" style="opacity:.35;transition:.5s">🛡️ Redirecting...</div></div><script>setTimeout(()=>document.getElementById('l2').style.opacity='1',800);setTimeout(()=>document.getElementById('l3').style.opacity='1',1600);<\/script></body>`;
+    setTimeout(()=>{ window.location.href = f.original; }, 2500);
+    throw new Error("STOP_RENDER");
+  }catch(e){ if(e.message==="STOP_RENDER") throw e; }
+})();
+</script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkateCart PRO</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>emailjs.init("y5qo1fs87tL0pZihp");</script>
@@ -189,20 +207,6 @@ function updatePayout(){
  document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
 }
 function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
-
-// ✅ COATING - THE DAILY AHAA STYLE - FINAL
-(function(){
- let pathMatch = location.pathname.match(/\/r\/([A-Z0-9]+)/i);
- if(!pathMatch) return;
- let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
- let s = pathMatch[1];
- let f = all.find(x=>x.shortId.toUpperCase()===s.toUpperCase());
- if(!f) return;
- f.clicks=(f.clicks||0)+1;
- localStorage.setItem('skate_all_links',JSON.stringify(all));
- document.documentElement.innerHTML = `<head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title></head><body style="margin:0;font-family:Inter,Arial;background:#fff;display:flex;align-items:center;justify-content:center;height:100vh;"><div style="text-align:center;line-height:38px;font-size:13px;color:#333;"><div>🔒 Checking for traffic security...</div><div id="l2" style="opacity:.35;transition:.5s">🛡️ Verifying your connection...</div><div id="l3" style="opacity:.35;transition:.5s">🛡️ Redirecting...</div></div><script>setTimeout(()=>document.getElementById('l2').style.opacity='1',800);setTimeout(()=>document.getElementById('l3').style.opacity='1',1600);<\/script></body>`;
- setTimeout(()=>{ window.location.href = f.original; }, 2500);
-})();
 if(cur) loadR();
 document.getElementById('dateEnd').valueAsDate=new Date();
 </script>
