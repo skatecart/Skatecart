@@ -115,23 +115,31 @@ function showPage(id,el){
 function signOut(){localStorage.removeItem('skate_current');location.reload();}
 let cur=checkLogin();
 if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
+
+function copyT(id){ let t=document.getElementById(id).innerText; navigator.clipboard.writeText(t).then(()=>alert("Copied: "+t)); }
+
+// *** YAH NAYA SHORT LINK SYSTEM HAI - YEHI LAGANA HAI ***
 function makeLinks(){
   let o=document.getElementById('wLink').value.trim();
-  if(!o) return alert("Please paste a link");
+  if(!o) return alert("Please paste a Walmart link");
   document.getElementById('genBtn').innerText="Generating...";
-  let b64=btoa(o).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  let base = location.origin + "/Skatecart/";
-  if(location.origin.includes("null") || location.protocol==="file:") base="https://skatecart.github.io/Skatecart/";
-  if(location.pathname.includes("/Skatecart/")) base = location.origin + "/Skatecart/";
-  let short = base + "r/" + b64;
-  let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
-  all.push({shortId:b64,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
-  localStorage.setItem('skate_all_links',JSON.stringify(all));
-  document.getElementById('shortLink').innerText=short;
-  document.getElementById('readySec').style.display='block';
-  loadR();
-  document.getElementById('genBtn').innerText="Generate Earning Link";
+  let sid=Math.random().toString(36).substring(2,10).toUpperCase();
+  let BUCKET="SkateCartPro_786";
+  fetch("https://kvdb.io/"+BUCKET+"/"+sid,{method:'POST',body:o}).then(()=>{
+    let base=location.origin+"/Skatecart/";
+    if(location.origin.includes("null")||location.protocol==="file:") base="https://skatecart.github.io/Skatecart/";
+    if(location.pathname.includes("/Skatecart/")) base=location.origin+"/Skatecart/";
+    let short=base+"r/"+sid;
+    let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
+    all.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
+    localStorage.setItem('skate_all_links',JSON.stringify(all));
+    document.getElementById('shortLink').innerText=short;
+    document.getElementById('readySec').style.display='block';
+    loadR();
+    document.getElementById('genBtn').innerText="Generate Earning Link";
+  }).catch(()=>{alert("Internet error - دوبارہ کوشش کرو");document.getElementById('genBtn').innerText="Generate Earning Link";});
 }
+
 function loadR(){
  if(!cur) return;
  let all=JSON.parse(localStorage.getItem('skate_all_links')||'[]');
@@ -165,7 +173,7 @@ function applyAnalytics(){
  document.getElementById('aClicks').innerText=clicks;
  document.getElementById('aSales').innerText=sales+" Sales";
  document.getElementById('aEarn').innerText=earn.toFixed(2);
- document.getElementById('aRecent').innerHTML=document.getElementById('recent').innerHTML;
+ let h="";mine.reverse().forEach((mm,idx)=>{ h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${mine.length-idx}</div><div style="font-weight:800;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b">Clicks:${mm.clicks||0} | Sales:${mm.sales||0} | $${(mm.saleAmount||0).toFixed(2)}</div></div>`;});document.getElementById('aRecent').innerHTML=h||"<p style='text-align:center;color:#999'>No data</p>";
 }
 function updatePayout(){
  if(!cur) return;
@@ -176,7 +184,5 @@ function updatePayout(){
  document.getElementById('pEarnSmall').innerText=total.toFixed(2);
  document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
 }
-function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
-loadR();applyAnalytics();updatePayout();
-</script>
-</body></html>
+loadR();
+</script></body></html>
