@@ -28,7 +28,7 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 #approvedPop{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:5000;display:none;overflow:auto}
 </style></head><body>
 <script>
-// === REDIRECT FIX - YE SAB SE PEHLE CHALEGA ===
+// === REDIRECT FIX ===
 (async function(){
   const params = new URLSearchParams(window.location.search);
   const sid = params.get('s');
@@ -47,7 +47,7 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
         await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {method:"PUT", headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY}, body:JSON.stringify(record)});
         window.location.href = found.original;
       } else {
-        document.body.innerHTML = "<div style='text-align:center;padding:40px'><h2>Link not found ❌</h2><p>This short link does not exist.</p><a href='/Skatecart/'>Go to Home</a></div>";
+        document.body.innerHTML = "<div style='text-align:center;padding:40px;font-family:Inter'><h2>Link not found ❌</h2><p>This short link does not exist: "+sid+"</p><a href='/Skatecart/'>Go to Home</a></div>";
       }
     }catch(e){ console.log(e); document.body.innerHTML = "Error: "+e.message; }
     return;
@@ -76,18 +76,19 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <div class="footerZy">© 2026 SkateCart. All rights reserved. BIN Connected ✓</div>
 </div>
 <script>
-// --- JSONBIN CONFIG ---
+// --- JSONBIN CONFIG - FIXED BY AI ---
 const BIN_ID = "6abdd30eac6210605a07b484";
 const MASTER_KEY = "$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 async function getBin(){
   try{
-    const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{headers:{"X-Master-Key":MASTER_KEY}});
+    const r = await fetch(`${BIN_URL}/latest`,{headers:{"X-Master-Key":MASTER_KEY}});
     const d = await r.json();
     return d.record || {users:[], links:[]};
-  }catch(e){ return {users:[], links:[]}; }
+  }catch(e){ console.log(e); return {users:[], links:[]}; }
 }
 async function saveBin(data){
-  await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
+  await fetch(BIN_URL,{
     method:"PUT",
     headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY},
     body: JSON.stringify(data)
@@ -158,6 +159,8 @@ function signOut(){localStorage.removeItem('skate_current');location.reload();}
 let cur=checkLogin();
 if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
 function genID(){return Math.random().toString(36).substring(2,10).toUpperCase();}
+function copyT(id){let t=document.getElementById(id).innerText;navigator.clipboard.writeText(t);alert("Copied: "+t);}
+
 async function makeLinks(){
  let o=document.getElementById('wLink').value.trim();if(!o)return alert("Please paste a link");
  document.getElementById('genBtn').innerText="Generating...";
@@ -186,40 +189,13 @@ async function loadR(){
  document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2);
  document.getElementById('earn').innerText="$"+total.toFixed(2);
  document.getElementById('pBar').style.width=Math.min((total/25)*100,100)+"%";
- let h="";mine.forEach((mm,idx)=>{let num=mine.length-idx; h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="font-weight:800;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b;margin:6px 0 0 36px">🔗 Created ${mm.date}</div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');this.innerText='Copied!';setTimeout(()=>this.innerText='Copy',1500)">Copy</button></div>`;});document.getElementById('recent').innerHTML=h||"<p style='text-align:center;color:#999'>No links yet</p>";
+ if(document.getElementById('pEarn')){document.getElementById('pEarn').innerText="$"+total.toFixed(2); document.getElementById('pEarnSmall').innerText=total.toFixed(2); document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";}
+ let h="";mine.forEach((mm,idx)=>{let num=mine.length-idx; h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="font-weight:800;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b;margin:6px 0 0 36px">🔗 Created ${mm.date} | Clicks: ${mm.clicks||0}</div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');alert('Copied!')">Copy Link</button></div>`;});
+ document.getElementById('recent').innerHTML = h || "<p style='text-align:center;color:#999;font-size:13px'>No links yet</p>";
 }
-function setPeriod(type){
- document.getElementById('p7').style.background='#fff'; document.getElementById('p7').style.color='#000';
- document.getElementById('p30').style.background='#fff'; document.getElementById('p30').style.color='#000';
- document.getElementById('pC').style.background='#fff'; document.getElementById('pC').style.color='#000';
- if(type=='7'){ document.getElementById('p7').style.background='#2563eb'; document.getElementById('p7').style.color='#fff'; document.getElementById('aLabel').innerText='Last 7 days'; }
- if(type=='30'){ document.getElementById('p30').style.background='#2563eb'; document.getElementById('p30').style.color='#fff'; document.getElementById('aLabel').innerText='Last 30 days'; }
- if(type=='custom'){ document.getElementById('pC').style.background='#2563eb'; document.getElementById('pC').style.color='#fff'; document.getElementById('aLabel').innerText='Custom Date'; }
-}
-async function applyAnalytics(){
- if(!cur) return;
- let db = await getBin();
- let all=db.links||[];
- let mine=all.filter(x=>x.owner===cur.email);
- let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
- let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
- let earn=clicks*0.25 + mine.reduce((a,b)=>a+(b.saleAmount||0),0);
- document.getElementById('aClicks').innerText=clicks;
- document.getElementById('aSales').innerText=sales+" Sales";
- document.getElementById('aEarn').innerText=earn.toFixed(2);
- document.getElementById('aRecent').innerHTML=document.getElementById('recent').innerHTML;
-}
-async function updatePayout(){
- if(!cur) return;
- let db = await getBin();
- let all=db.links||[];
- let mine=all.filter(x=>x.owner===cur.email);
- let total=mine.reduce((a,b)=>a+(b.clicks||0),0)*0.25;
- document.getElementById('pEarn').innerText="$"+total.toFixed(2);
- document.getElementById('pEarnSmall').innerText=total.toFixed(2);
- document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";
-}
-function copyT(id){navigator.clipboard.writeText(document.getElementById(id).innerText);alert("Copied!");}
+function setPeriod(p){document.getElementById('p7').style.background=p=='7'?'#2563eb':'#fff';document.getElementById('p7').style.color=p=='7'?'#fff':'#000';document.getElementById('p30').style.background=p=='30'?'#2563eb':'#fff';document.getElementById('p30').style.color=p=='30'?'#fff':'#000';}
+async function applyAnalytics(){loadR(); let db=await getBin(); let all=(db.links||[]).filter(x=>x.owner===cur?.email); let clicks=all.reduce((a,b)=>a+(b.clicks||0),0); document.getElementById('aClicks').innerText=clicks; document.getElementById('aSales').innerText="0 Sales"; document.getElementById('aEarn').innerText=(clicks*0.25).toFixed(2);}
+function updatePayout(){loadR();}
 if(cur) loadR();
 </script>
 </body></html>
