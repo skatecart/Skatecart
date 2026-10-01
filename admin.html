@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skatecart Admin Panel</title>
+<title>Skatecart Admin PRO</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init("y5qo1fs87tL0pZihp");</script>
 <style>
 body{margin:0;font-family:system-ui;background:#0f0f0f;color:white}
 #loginBox{height:100vh;display:flex;align-items:center;justify-content:center}
-.login-card{background:white;color:black;padding:25px;border-radius:16px;width:90%;max-width:340px;text-align:center}
+.login-card{background:white;color:black;padding:25px;border-radius:16px;width:90%;max-width:360px;text-align:center}
 .login-card input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;font-size:16px;box-sizing:border-box}
-.login-card button{width:100%;padding:12px;background:black;color:white;border:none;border-radius:8px;font-weight:bold}
-#adminPanel{display:none;padding:15px}
+.login-card button{width:100%;padding:12px;background:black;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+#adminPanel{display:none;padding:15px;max-width:700px;margin:auto}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:15px}
 .stat{background:#1f1f1f;padding:12px;border-radius:12px;text-align:center}
-.stat b{font-size:20px;display:block;color:#00ff88}
-.user-card{background:#1f1f1f;padding:12px;border-radius:12px;margin-bottom:10px;border-left:4px solid #ffcc00}
+.stat b{font-size:22px;display:block;color:#00ff88}
+.user-card{background:#1f1f1f;padding:15px;border-radius:12px;margin-bottom:12px;border-left:4px solid #ffcc00}
 .user-card.approved{border-left-color:#00ff88}
 .user-card.rejected{border-left-color:#ff4444}
-.btn{padding:6px 12px;border:none;border-radius:6px;font-weight:bold;margin-right:5px}
+.user-card.pending{border-left-color:#ffcc00}
+.btn{padding:8px 14px;border:none;border-radius:6px;font-weight:bold;margin-right:6px;cursor:pointer}
 .approve{background:#00ff88;color:black}
 .reject{background:#ff4444;color:white}
 </style>
@@ -25,7 +28,7 @@ body{margin:0;font-family:system-ui;background:#0f0f0f;color:white}
 <body>
 <div id="loginBox">
   <div class="login-card">
-    <h2>🔒 Admin Login</h2>
+    <h2>🔒 Admin Login PRO</h2>
     <input id="u" placeholder="Username">
     <input id="p" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
@@ -33,16 +36,21 @@ body{margin:0;font-family:system-ui;background:#0f0f0f;color:white}
   </div>
 </div>
 <div id="adminPanel">
-  <h2>Skatecart Admin</h2>
+  <h2>Skatecart Admin PRO <span style="font-size:12px;color:#00ff88">BIN Connected ✓</span></h2>
   <div class="stats">
     <div class="stat"><b id="total">0</b>Total</div>
     <div class="stat"><b id="pending">0</b>Pending</div>
     <div class="stat"><b id="approved">0</b>Approved</div>
   </div>
-  <div id="list"></div>
+  <button onclick="loadUsers()" style="background:#333;color:white;padding:8px 14px;border-radius:8px;border:none;margin-bottom:10px">🔄 Refresh</button>
+  <div id="list">Loading...</div>
 </div>
 <script>
+const BIN_ID = "6abdd30eac6210605a07b484";
+const MASTER_KEY = "$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 const ADMIN_U="admin"; const ADMIN_P="Haresh@123";
+
 function login(){
  if(document.getElementById('u').value===ADMIN_U && document.getElementById('p').value===ADMIN_P){
   localStorage.setItem('skate_admin_login','true'); showAdmin();
@@ -54,23 +62,58 @@ function showAdmin(){
  loadUsers();
 }
 if(localStorage.getItem('skate_admin_login')==='true'){showAdmin();}
-function loadUsers(){
- let users=JSON.parse(localStorage.getItem('skatecart_users')||'[]');
- document.getElementById('total').innerText=users.length;
- document.getElementById('pending').innerText=users.filter(u=>u.status==='pending').length;
- document.getElementById('approved').innerText=users.filter(u=>u.status==='approved').length;
- let h='';
- users.forEach((u,i)=>{
-  h+=`<div class="user-card ${u.status}"><b>${u.name}</b> - ${u.email}<br>
-  Status: ${u.status}<br><br>
-  <button class="btn approve" onclick="setStatus(${i},'approved')">Approve</button>
-  <button class="btn reject" onclick="setStatus(${i},'rejected')">Reject</button></div>`;
- });
- document.getElementById('list').innerHTML=h;
+
+async function getBin(){
+  const r = await fetch(`${BIN_URL}/latest`,{headers:{"X-Master-Key":MASTER_KEY}});
+  const d = await r.json();
+  return d.record;
 }
-function setStatus(i,s){
- let users=JSON.parse(localStorage.getItem('skatecart_users')||'[]');
- users[i].status=s; localStorage.setItem('skatecart_users',JSON.stringify(users)); loadUsers();
+async function saveBin(data){
+  await fetch(BIN_URL,{method:"PUT",headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY},body: JSON.stringify(data)});
+}
+
+async function loadUsers(){
+  document.getElementById('list').innerHTML="Loading users...";
+  let data = await getBin();
+  let users = data.users || [];
+  document.getElementById('total').innerText=users.length;
+  document.getElementById('pending').innerText=users.filter(u=>!u.status || u.status==='pending').length;
+  document.getElementById('approved').innerText=users.filter(u=>u.status==='approved').length;
+  let h='';
+  users.slice().reverse().forEach((u)=>{
+    let realIndex = users.indexOf(u);
+    h+=`<div class="user-card ${u.status||'pending'}">
+    <b>${u.fullName || u.firstName}</b> - ${u.email}<br>
+    <small>FB: ${u.fbLink||'-'}</small><br>
+    <small>Date: ${new Date(u.created).toLocaleString()}</small><br>
+    Status: <b>${(u.status||'pending').toUpperCase()}</b><br><br>
+    <button class="btn approve" onclick="setStatus(${realIndex},'approved')">Approve</button>
+    <button class="btn reject" onclick="setStatus(${realIndex},'rejected')">Reject</button>
+    </div>`;
+  });
+  document.getElementById('list').innerHTML = h || 'کوئی یوزر نہیں ملا';
+}
+
+async function setStatus(i,s){
+  if(!confirm(s+' کرنا ہے؟')) return;
+  let data = await getBin();
+  data.users[i].status = s;
+  await saveBin(data);
+
+  // Email bhejna
+  if(s==='approved'){
+    try{
+      emailjs.send("service_wxtih9l", "template_qrvny1f", {
+        to_email: data.users[i].email,
+        to_name: data.users[i].fullName,
+        message: "Congratulations! Your SkateCart account has been APPROVED. You can now login and start earning."
+      });
+      alert('Approved + Email bhej diya ✅');
+    }catch(e){ alert('Approved ho gaya lekin Email me error: '+e.message); }
+  } else {
+    alert('Status '+s+' kar diya');
+  }
+  loadUsers();
 }
 </script>
 </body>
