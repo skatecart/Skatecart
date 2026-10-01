@@ -1,0 +1,215 @@
+<!DOCTYPE html><html><head><meta name='impact-site-verification' value='e26eefd2-098e-4364-bc94-088bdd7d79e1'><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SkateCart PRO</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init("y5qo1fs87tL0pZihp");</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;800;900&display=swap');
+body{margin:0;font-family:Inter,Arial;background:#f0faf9}
+.hd{padding:14px 20px;background:#fff;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99;border-bottom:1px solid #e5ecec}
+.logo{font-weight:900;font-size:26px;color:#facc15}.logo span{color:#0e7490}
+.wrap{max-width:520px;margin:0 auto;padding:10px}
+.payout{background:linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#0f766e 100%);border-radius:24px;padding:20px;color:#fff;margin:12px 0}
+.pGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.pItem{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px}
+.pItem b{font-size:9px;color:#5eead4;display:block;margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase}
+.pItem span{font-size:16px;font-weight:900}
+.pItem.sale{border:1px solid rgba(250,204,21,.4);background:rgba(250,204,21,.1)}.pItem.sale b{color:#facc15}
+.progress{height:10px;background:rgba(255,255,255,.15);border-radius:20px;margin:16px 0;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#2dd4bf,#facc15);border-radius:20px}
+.box{background:#fff;border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 8px 25px rgba(0,0,0,.06);border:1px solid #eef2f2}
+.inp{width:100%;padding:16px;border:1.5px solid #e2e8f0;border-radius:14px;box-sizing:border-box;font-size:15px;outline:none;background:#fff;margin-top:8px}
+.btn{width:100%;background:linear-gradient(90deg,#0f766e,#14b8a6);color:#fff;border:none;padding:16px;border-radius:14px;font-weight:900;font-size:17px;margin-top:12px;cursor:pointer}
+.linkArea{background:#f8fafc;border:1.5px dashed #99f6e0;border-radius:14px;padding:14px;margin:8px 0;word-break:break-all;text-align:center;font-weight:700}
+.drawer{position:fixed;top:0;right:-100%;width:85%;max-width:340px;height:100%;background:#fff;z-index:1000;transition:.35s;padding:22px;box-sizing:border-box}.drawer.open{right:0}.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:999;display:none}.overlay.show{display:block}
+.mItem{padding:14px;border-radius:12px;margin:5px 0;font-weight:700;color:#334155;cursor:pointer;display:flex;align-items:center;gap:10px}.mItem.active{background:#e6fffe;color:#0f766e;border:1px solid #99f6e0}
+.page{display:none}.page.active{display:block}
+.rCardZy{border:1.5px solid #e9eef0;border-radius:16px;padding:14px;margin:12px 0;background:#fff}
+.numBadge{background:#0f9b8e;color:#fff;min-width:28px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:900;font-size:12px}
+.copyBz{width:100%;background:linear-gradient(90deg,#243949 0%, #0f9b8e 100%);color:#fff;border:none;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-top:10px}
+.footerZy{text-align:center;font-size:12px;color:#64748b;padding:18px 10px;margin-top:25px;border-top:1px solid #eef2f2;background:#fff}
+#loginPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#f0faf9;z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+#approvedPop{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:5000;display:none;overflow:auto}
+#pendingPop{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:5000;display:none;overflow:auto}
+</style></head><body>
+<script>
+(async function(){
+  const params = new URLSearchParams(window.location.search);
+  const sid = params.get('s');
+  if(sid){
+    document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;font-family:Inter;text-align:center;padding:20px'><h2 style='color:#0f766e'>Redirecting to Walmart...</h2><p>Please wait</p></div>";
+    try{
+      const BIN_ID = "6abdd30eac6210605a07b484";
+      const MASTER_KEY = "$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {headers:{"X-Master-Key":MASTER_KEY}});
+      const data = await res.json();
+      const record = data.record;
+      const links = record.links || [];
+      const found = links.find(l=>l.shortId===sid);
+      if(found){
+        found.clicks = (found.clicks||0)+1;
+        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {method:"PUT", headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY}, body:JSON.stringify(record)});
+        window.location.href = found.original;
+      }
+    }catch(e){}
+    return;
+  }
+})();
+</script>
+<div id="pendingPop"><div style="max-width:600px;margin:0 auto"><div style="background:linear-gradient(135deg,#f59e0b,#eab308);padding:40px 20px;text-align:center;color:#fff"><div style="font-size:40px">⏳</div><h1 style="margin:10px 0 0 0;font-size:28px;font-weight:900">Application<br>Under Review</h1></div><div style="padding:24px"><h2 id="pendingName">Hi! 👋</h2><p style="color:#475569;font-size:14px">Thanks for joining SkateCart. Your account is pending approval.</p><div style="border-left:4px solid #f59e0b;background:#fffbeb;padding:14px 18px;border-radius:8px;margin:16px 0;font-weight:800">Status: PENDING - 24 Hours Review</div><div style="background:#fef3c7;border:1px solid #fde68a;padding:18px;border-radius:12px"><div style="font-weight:900;color:#92400e">🕒 What happens next?</div><p style="margin:8px 0 0 0;color:#334155;font-size:14px">Our team will review your Facebook Group link. Once approved, you will get email and can start earning.</p></div><button onclick="localStorage.removeItem('skate_current');location.reload()" style="display:block;width:220px;margin:20px auto;background:#111827;color:#fff;padding:14px;border-radius:30px;border:none;font-weight:800">Okay, Got It</button></div></div></div>
+<div id="approvedPop"><div style="max-width:600px;margin:0 auto"><div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:40px 20px;text-align:center;color:#fff"><div style="font-size:40px">✅</div><h1 style="margin:10px 0 0 0;font-size:28px;font-weight:900">Application<br>Update</h1><p>Your application has been approved!</p></div><div style="padding:24px"><h2 id="popName">Hi! 👋</h2><div style="border-left:4px solid #6366f1;background:#f8fafc;padding:14px 18px;border-radius:8px;margin:16px 0;font-weight:800">Status: APPROVED</div><div style="background:#dcfce7;border:1px solid #bbf7d0;padding:18px;border-radius:12px"><div style="font-weight:900;color:#15803d">🎉 You're Approved!</div><p style="margin:8px 0 0 0;color:#334155;font-size:14px">Congratulations! You can now start generating product links.</p></div><button onclick="document.getElementById('approvedPop').style.display='none';location.reload()" style="display:block;width:220px;margin:20px auto;background:#22c55e;color:#fff;padding:14px;border-radius:30px;border:none;font-weight:800">Start Creating Links</button></div></div></div>
+<div id="loginPage"><div class="box" style="width:100%;max-width:400px"><div class="logo" style="text-align:center;margin-bottom:10px;font-size:32px">Skate <span>Cart</span></div><h2 id="logTitle" style="text-align:center">Create Account</h2><p style="text-align:center;font-size:11px;color:#64748b">Policy: Facebook Group Link Lazmi Hai</p><div style="display:flex;gap:8px"><input id="fName" class="inp" placeholder="First Name"><input id="lName" class="inp" placeholder="Last Name"></div><input id="lEmail" class="inp" placeholder="Gmail"><input id="lPass" type="password" class="inp" placeholder="Password - min 4 chars"><input id="fbLink" class="inp" placeholder="Facebook Group Link - https://facebook.com/groups/..."><label id="policyLabel" style="font-size:11px;color:#334155;display:flex;gap:6px;margin-top:10px"><input type="checkbox" id="policyCheck"> I agree to Policy - Minimum Payout $25, 45 Days Pending</label><button class="btn" id="authBtn" onclick="doAuth()">Create Account & Continue</button><p style="text-align:center;font-size:13px;margin-top:12px"><span style="color:#0d9488;font-weight:800;cursor:pointer" onclick="toggleLog()" id="logSwitch">Already have account? Sign In</span></p></div></div>
+<div class="hd"><div class="logo">Skate <span>Cart</span></div><div style="font-size:28px;cursor:pointer" onclick="openMenu()">☰</div></div>
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="drawer" id="drawer"><div style="display:flex;justify-content:space-between;align-items:center"><div class="logo" style="font-size:22px">Skate <span>Cart</span></div><span style="font-size:28px;cursor:pointer" onclick="closeMenu()">✕</span></div><div style="margin-top:20px"><div class="mItem active" onclick="showPage('links',this)">🔗 My Links</div><div class="mItem" onclick="showPage('analytics',this)">📊 Analytics</div><div class="mItem" onclick="showPage('payment',this)">💳 Payouts</div><div class="mItem" onclick="showPage('history',this)">📜 Payment History</div></div><div style="margin-top:25px;border-top:1px solid #eee;padding-top:16px"><div style="font-weight:800" id="uName">-</div><div style="font-size:13px;color:#64748b" id="uEmail">-</div><div style="margin-top:12px;background:#fef2f2;color:#ef4444;padding:10px;border-radius:10px;font-weight:800;text-align:center;cursor:pointer" onclick="signOut()">Sign out</div></div></div>
+<div class="wrap">
+<div id="links" class="page active">
+<div class="payout"><div style="font-weight:900;font-size:18px">💳 Your Payout Dashboard</div>
+<div class="pGrid"><div class="pItem"><b>Current Balance</b><span id="earn">$0.00</span></div><div class="pItem"><b>Total Clicks</b><span id="clicks">0</span></div><div class="pItem sale"><b>Total Sales</b><span id="sales">0 Sales</span></div><div class="pItem sale"><b>Sales Commission</b><span id="saleEarn">$0.00</span></div><div class="pItem"><b>Minimum Payout</b><span>$25.00</span></div><div class="pItem"><b>Status</b><span id="status" style="font-size:12px;color:#facc15">Pending</span></div></div>
+<div class="progress"><div id="pBar" class="bar" style="width:0%"></div></div>
+</div>
+<div class="box"><input id="wLink" class="inp" placeholder="Paste Walmart Link..."><button id="genBtn" class="btn" onclick="makeLinks()">Generate Earning Link</button></div>
+<div id="readySec" style="display:none"><div class="box" style="background:#ecfdf5;text-align:center"><h3>🎉 Link Ready!</h3><div class="linkArea" id="shortLink"></div><button class="btn" onclick="copyT('shortLink')">Copy & Share to Earn</button></div></div>
+<div class="box"><div style="font-weight:900;font-size:18px">🔗 Recent Links</div><div id="recent" style="margin-top:10px"></div></div>
+</div>
+<div id="analytics" class="page"><div class="box"><div style="font-weight:900;font-size:20px;text-align:center">📊 Analytics</div><div style="background:#f8fafc;border-radius:14px;padding:14px;margin-top:14px;border:1px solid #eef2f2"><div style="text-align:center;font-size:11px;color:#64748b;font-weight:700;letter-spacing:1px;margin-bottom:8px">TIME PERIOD</div><div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px"><button onclick="setPeriod('7')" id="p7" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Last 7 days</button><button onclick="setPeriod('30')" id="p30" style="padding:8px 14px;border-radius:20px;border:none;background:#2563eb;color:#fff;font-size:12px;font-weight:700">Last 30 days</button><button onclick="setPeriod('custom')" id="pC" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Custom</button></div><div style="display:flex;gap:8px"><input id="dateStart" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"><input id="dateEnd" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"></div><button onclick="applyAnalytics()" class="btn">Apply</button></div><div style="background:#f0fdfa;border-radius:16px;padding:20px;text-align:center;margin-top:14px;border:1px solid #ccfbf1"><div style="font-weight:800;margin:8px 0">Total Clicks: <span id="aClicks">0</span></div><div style="font-weight:800;margin:8px 0">Total Sales: <span id="aSales">0 Sales</span></div><div style="font-weight:900;margin:8px 0;font-size:20px;color:#0f766e">Total Earnings: $<span id="aEarn">0.00</span></div><div style="font-size:12px;color:#64748b;margin-top:8px" id="aLabel">Last 30 days</div></div><div id="aRecent" style="margin-top:10px"></div></div></div>
+<div id="payment" class="page"><div class="box" style="text-align:center"><div style="font-weight:900;font-size:20px">💳 Payouts</div><p style="font-size:13px;color:#64748b">Minimum Payout $25 - 45 Days Pending</p><div style="background:#f0fdfa;padding:20px;border-radius:16px;margin-top:10px;border:1px solid #ccfbf1"><div style="font-size:13px;color:#64748b">Current Balance</div><div style="font-size:32px;font-weight:900;color:#0f766e" id="pEarn">$0.00</div><div class="progress"><div id="pBar2" class="bar" style="width:0%"></div></div><div style="font-size:11px;color:#64748b;margin-top:8px">$<span id="pEarnSmall">0.00</span> / $25.00</div></div><button class="btn" style="opacity:.6">Request Payout (Min $25)</button></div></div>
+<div id="history" class="page"><div class="box" style="text-align:center"><div style="font-weight:900;font-size:20px">📜 Payment History</div><p style="font-size:13px;color:#999;margin-top:20px">No payment history yet.<br>Your payouts will show here after 45 days.</p></div></div>
+<div class="footerZy">© 2026 SkateCart. All rights reserved. BIN Connected ✓<br><div style="margin-top:12px; font-size:13px;"><a href="about.html" style="color:#0f766e; text-decoration:none; font-weight:800; margin:0 8px;">About Us</a> | <a href="privacy.html" style="color:#0f766e; text-decoration:none; font-weight:800; margin:0 8px;">Privacy Policy</a> | <a href="contact.html" style="color:#0f766e; text-decoration:none; font-weight:800; margin:0 8px;">Contact Us</a></div></div>
+</div>
+<script>
+const BIN_ID = "6abdd30eac6210605a07b484";
+const MASTER_KEY = "$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
+const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+async function getBin(){
+  try{
+    const r = await fetch(`${BIN_URL}/latest`,{headers:{"X-Master-Key":MASTER_KEY}});
+    const d = await r.json();
+    return d.record || {users:[], links:[]};
+  }catch(e){ return {users:[], links:[]}; }
+}
+async function saveBin(data){
+  await fetch(BIN_URL,{method:"PUT",headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY},body: JSON.stringify(data)});
+}
+let isSignup=true;
+function toggleLog(){
+ isSignup=!isSignup;
+ document.getElementById('fName').style.display=isSignup?'block':'none';
+ document.getElementById('lName').style.display=isSignup?'block':'none';
+ document.getElementById('fbLink').style.display=isSignup?'block':'none';
+ document.getElementById('policyLabel').style.display=isSignup?'flex':'none';
+ document.getElementById('logTitle').innerText=isSignup?'Create Account':'Sign In';
+ document.getElementById('logSwitch').innerText=isSignup?'Already have account? Sign In':'New user? Create Account';
+ document.getElementById('authBtn').innerText = isSignup ? 'Create Account & Continue' : 'Sign In & Continue';
+}
+function sendMail(toEmail,toName){
+  try{ emailjs.send("service_wxtih9l", "template_qrvny1f", { to_email: toEmail, to_name: toName }); }catch(e){}
+}
+async function doAuth(){
+ let fName=document.getElementById('fName').value.trim();
+ let lName=document.getElementById('lName').value.trim();
+ let email=document.getElementById('lEmail').value.trim().toLowerCase();
+ let pass=document.getElementById('lPass').value.trim();
+ let fb=document.getElementById('fbLink').value.trim();
+ document.getElementById('authBtn').innerText="Loading...";
+ let db = await getBin();
+ if(!db.users) db.users=[]; if(!db.links) db.links=[];
+ if(isSignup){
+   if(!fName||!lName||!email||!pass||!fb){alert('Bhai sab fields lazmi hai'); document.getElementById('authBtn').innerText='Create Account & Continue'; return;}
+   if(!fb.includes('facebook.com')){alert('Sahi Facebook Link dalo'); document.getElementById('authBtn').innerText='Create Account & Continue'; return;}
+   if(!document.getElementById('policyCheck').checked){alert('Policy Agree karo'); document.getElementById('authBtn').innerText='Create Account & Continue'; return;}
+   if(db.users.find(u=>u.email===email)){alert('Ye Gmail pehle se hai'); document.getElementById('authBtn').innerText='Create Account & Continue'; return;}
+   db.users.push({firstName:fName,lastName:lName,email,pass,fbLink:fb,fullName:fName+' '+lName, status:'pending', created: Date.now()});
+   await saveBin(db);
+   sendMail(email, fName+' '+lName);
+   document.getElementById('pendingName').innerText='Hi '+fName+' '+lName+'! 👋';
+   document.getElementById('loginPage').style.display='none';
+   document.getElementById('pendingPop').style.display='block';
+   document.getElementById('authBtn').innerText='Create Account & Continue';
+ }else{
+   if(!email||!pass){alert('Gmail / Password likho'); document.getElementById('authBtn').innerText='Sign In & Continue'; return;}
+   let f=db.users.find(u=>u.email===email && u.pass===pass);
+   if(!f){alert('Gmail ya Password galat hai'); document.getElementById('authBtn').innerText='Sign In & Continue'; return;}
+   if(!f.status || f.status==='pending'){
+     document.getElementById('pendingName').innerText='Hi '+(f.fullName||f.firstName)+'! 👋';
+     document.getElementById('loginPage').style.display='none';
+     document.getElementById('pendingPop').style.display='block';
+     document.getElementById('authBtn').innerText='Sign In & Continue';
+     return;
+   }
+   if(f.status==='rejected'){
+     alert('Sorry, aapka account reject ho gaya hai.');
+     document.getElementById('authBtn').innerText='Sign In & Continue';
+     return;
+   }
+   localStorage.setItem('skate_current',JSON.stringify({email:f.email,name:f.fullName}));
+   document.getElementById('popName').innerText='Hi '+(f.fullName||'')+'! 👋';
+   document.getElementById('loginPage').style.display='none';
+   document.getElementById('approvedPop').style.display='block';
+ }
+}
+function checkLogin(){
+ let curStr=localStorage.getItem('skate_current');
+ if(!curStr){document.getElementById('loginPage').style.display='flex';return null;}
+ document.getElementById('loginPage').style.display='none';
+ return JSON.parse(curStr);
+}
+function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('show')}
+function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+function showPage(id,el){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id)?.classList.add('active');
+ document.querySelectorAll('.mItem').forEach(m=>m.classList.remove('active'));
+ if(el) el.classList.add('active');
+ closeMenu();
+ if(id==='analytics') applyAnalytics();
+ if(id==='payment') updatePayout();
+}
+function signOut(){localStorage.removeItem('skate_current');location.reload();}
+let cur=checkLogin();
+if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
+function genID(){return Math.random().toString(36).substring(2,10).toUpperCase();}
+function copyT(id){let t=document.getElementById(id).innerText;navigator.clipboard.writeText(t);alert("Copied: "+t);}
+async function makeLinks(){
+ let o=document.getElementById('wLink').value.trim();if(!o)return alert("Please paste a link");
+ document.getElementById('genBtn').innerText="Generating...";
+ let sid=genID();
+ let short=location.origin+location.pathname+"?s="+sid;
+ let db = await getBin();
+ if(!db.links) db.links=[];
+ db.links.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
+ await saveBin(db);
+ document.getElementById('shortLink').innerText=short;
+ document.getElementById('readySec').style.display='block';
+ loadR();
+ document.getElementById('genBtn').innerText="Generate Earning Link";
+}
+async function loadR(){
+ if(!cur) return;
+ let db = await getBin();
+ let all=db.links||[];
+ let mine=all.filter(x=>x.owner===cur.email).reverse();
+ let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
+ let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
+ let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
+ let total=clicks*0.25+saleComm;
+ document.getElementById('clicks').innerText=clicks;
+ document.getElementById('sales').innerText=sales+" Sales";
+ document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2);
+ document.getElementById('earn').innerText="$"+total.toFixed(2);
+ document.getElementById('pEarn').innerText="$"+total.toFixed(2);
+ document.getElementById('pEarnSmall').innerText=total.toFixed(2);
+ document.getElementById('pBar').style.width=Math.min(100,(total/25*100))+"%";
+ document.getElementById('pBar2').style.width=Math.min(100,(total/25*100))+"%";
+ let html='';
+ mine.forEach((l,i)=>{
+   html+=`<div class="rCardZy"><div style="display:flex;justify-content:space-between"><div style="font-weight:800;font-size:13px">${l.original.slice(0,40)}...</div><div class="numBadge">#${mine.length-i}</div></div><div style="font-size:12px;color:#64748b;margin-top:6px">Clicks: ${l.clicks||0} | Date: ${l.date}</div><div class="linkArea" style="font-size:12px" id="link${i}">${l.shortLink}</div><button class="copyBz" onclick="copyT('link${i}')">Copy Link</button></div>`;
+ });
+ document.getElementById('recent').innerHTML=html || '<p style="text-align:center;color:#999">No links yet</p>';
+ document.getElementById('aRecent').innerHTML=html || '';
+ document.getElementById('aClicks').innerText=clicks;
+ document.getElementById('aSales').innerText=sales+" Sales";
+ document.getElementById('aEarn').innerText=total.toFixed(2);
+}
+function setPeriod(p){ document.querySelectorAll('[id^=p]').forEach(b=>{b.style.background='#fff';b.style.color='#000';b.style.border='1px solid #e2e8f0';}); document.getElementById(p==='7'?'p7':p==='30'?'p30':'pC').style.background='#2563eb'; document.getElementById(p==='7'?'p7':p==='30'?'p30':'pC').style.color='#fff'; document.getElementById('aLabel').innerText = p==='7'?'Last 7 days':p==='30'?'Last 30 days':'Custom'; }
+function applyAnalytics(){ loadR(); }
+function updatePayout(){ loadR(); }
+if(cur) loadR();
+</script>
+</body></html>
