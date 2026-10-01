@@ -48,7 +48,7 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
       } else {
         document.body.innerHTML = "<div style='text-align:center;padding:40px;font-family:Inter'><h2>Link not found ❌</h2><p>This short link does not exist: "+sid+"</p><a href='/Skatecart/'>Go to Home</a></div>";
       }
-    }catch(e){ document.body.innerHTML = "Error: "+e.message; }
+    }catch(e){ console.log(e); document.body.innerHTML = "Error: "+e.message; }
     return;
   }
 })();
