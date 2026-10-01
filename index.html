@@ -71,7 +71,17 @@ body{margin:0;font-family:Inter,Arial;background:#f0faf9}
 <div id="analytics" class="page"><div class="box"><div style="font-weight:900;font-size:20px;text-align:center">📊 Analytics</div><div style="background:#f8fafc;border-radius:14px;padding:14px;margin-top:14px;border:1px solid #eef2f2"><div style="text-align:center;font-size:11px;color:#64748b;font-weight:700;letter-spacing:1px;margin-bottom:8px">TIME PERIOD</div><div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px"><button onclick="setPeriod('7')" id="p7" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Last 7 days</button><button onclick="setPeriod('30')" id="p30" style="padding:8px 14px;border-radius:20px;border:none;background:#2563eb;color:#fff;font-size:12px;font-weight:700">Last 30 days</button><button onclick="setPeriod('custom')" id="pC" style="padding:8px 14px;border-radius:20px;border:1px solid #e2e8f0;background:#fff;font-size:12px;font-weight:700">Custom</button></div><div style="display:flex;gap:8px"><input id="dateStart" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"><input id="dateEnd" type="date" style="width:50%;padding:10px;border-radius:10px;border:1px solid #e2e8f0"></div><button onclick="applyAnalytics()" class="btn">Apply</button></div><div style="background:#f0fdfa;border-radius:16px;padding:20px;text-align:center;margin-top:14px;border:1px solid #ccfbf1"><div style="font-weight:800;margin:8px 0">Total Clicks: <span id="aClicks">0</span></div><div style="font-weight:800;margin:8px 0">Total Sales: <span id="aSales">0 Sales</span></div><div style="font-weight:900;margin:8px 0;font-size:20px;color:#0f766e">Total Earnings: $<span id="aEarn">0.00</span></div><div style="font-size:12px;color:#64748b;margin-top:8px" id="aLabel">Last 30 days</div></div><div id="aRecent" style="margin-top:10px"></div></div></div>
 <div id="payment" class="page"><div class="box" style="text-align:center"><div style="font-weight:900;font-size:20px">💳 Payouts</div><p style="font-size:13px;color:#64748b">Minimum Payout $25 - 45 Days Pending</p><div style="background:#f0fdfa;padding:20px;border-radius:16px;margin-top:10px;border:1px solid #ccfbf1"><div style="font-size:13px;color:#64748b">Current Balance</div><div style="font-size:32px;font-weight:900;color:#0f766e" id="pEarn">$0.00</div><div class="progress"><div id="pBar2" class="bar" style="width:0%"></div></div><div style="font-size:11px;color:#64748b;margin-top:8px">$<span id="pEarnSmall">0.00</span> / $25.00</div></div><button class="btn" style="opacity:.6">Request Payout (Min $25)</button></div></div>
 <div id="history" class="page"><div class="box" style="text-align:center"><div style="font-weight:900;font-size:20px">📜 Payment History</div><p style="font-size:13px;color:#999;margin-top:20px">No payment history yet.<br>Your payouts will show here after 45 days.</p></div></div>
-<div class="footerZy">© 2026 SkateCart. All rights reserved. BIN Connected ✓</div>
+
+<div class="footerZy">
+© 2026 SkateCart. All rights reserved. BIN Connected ✓
+<br>
+<div style="margin-top:12px; font-size:13px;">
+<a href="about.html" style="color:#0f766e; text-decoration:none; font-weight:800; margin:0 8px;">About Us</a> |
+<a href="privacy.html" style="color:#0f766e; text-decoration:none; font-weight:800; margin:0 8px;">Privacy Policy</a> |
+<a href="contact.html" style="color:#0f766e; text-decoration:none; font-weight:800; margin:0 8px;">Contact Us</a>
+</div>
+</div>
+
 </div>
 <script>
 const BIN_ID = "6abdd30eac6210605a07b484";
@@ -99,7 +109,7 @@ function toggleLog(){
  document.getElementById('authBtn').innerText = isSignup ? 'Create Account & Continue' : 'Sign In & Continue';
 }
 function sendMail(toEmail,toName){
-  emailjs.send("service_wxtih9l", "template_qrvny1f", { to_email: toEmail, to_name: toName });
+  try{ emailjs.send("service_wxtih9l", "template_qrvny1f", { to_email: toEmail, to_name: toName }); }catch(e){}
 }
 async function doAuth(){
  let fName=document.getElementById('fName').value.trim();
@@ -181,12 +191,35 @@ async function loadR(){
  document.getElementById('earn').innerText="$"+total.toFixed(2);
  document.getElementById('pBar').style.width=Math.min((total/25)*100,100)+"%";
  if(document.getElementById('pEarn')){document.getElementById('pEarn').innerText="$"+total.toFixed(2); document.getElementById('pEarnSmall').innerText=total.toFixed(2); document.getElementById('pBar2').style.width=Math.min((total/25)*100,100)+"%";}
- let h="";mine.forEach((mm,idx)=>{let num=mine.length-idx; h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="font-weight:800;font-size:13px;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${mm.shortLink}</div></div><div style="font-size:11px;color:#64748b;margin:6px 0 0 36px">🔗 Created ${mm.date} | Clicks: ${mm.clicks||0}</div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');alert('Copied!')">Copy Link</button></div>`;});
+ let h=""; 
+ mine.forEach((mm,idx)=>{
+   let num=mine.length-idx;
+   h+=`<div class="rCardZy"><div style="display:flex;gap:8px;align-items:center"><div class="numBadge">${num}</div><div style="flex:1"><div style="font-size:13px;font-weight:700;word-break:break-all">${mm.shortLink}</div><div style="font-size:11px;color:#64748b">${mm.date} - ${mm.clicks||0} Clicks</div></div></div><button class="copyBz" onclick="navigator.clipboard.writeText('${mm.shortLink}');alert('Copied')">Copy Link</button></div>`;
+ });
  document.getElementById('recent').innerHTML = h || "<p style='text-align:center;color:#999;font-size:13px'>No links yet</p>";
 }
-function setPeriod(p){document.getElementById('p7').style.background=p=='7'?'#2563eb':'#fff';document.getElementById('p7').style.color=p=='7'?'#fff':'#000';document.getElementById('p30').style.background=p=='30'?'#2563eb':'#fff';document.getElementById('p30').style.color=p=='30'?'#fff':'#000';}
-async function applyAnalytics(){loadR(); let db=await getBin(); let all=(db.links||[]).filter(x=>x.owner===cur?.email); let clicks=all.reduce((a,b)=>a+(b.clicks||0),0); document.getElementById('aClicks').innerText=clicks; document.getElementById('aSales').innerText="0 Sales"; document.getElementById('aEarn').innerText=(clicks*0.25).toFixed(2);}
-function updatePayout(){loadR();}
+async function updatePayout(){ await loadR(); }
+async function applyAnalytics(){
+ if(!cur) return;
+ let db = await getBin();
+ let mine=(db.links||[]).filter(x=>x.owner===cur.email);
+ let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
+ let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
+ let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
+ let total=clicks*0.25+saleComm;
+ document.getElementById('aClicks').innerText=clicks;
+ document.getElementById('aSales').innerText=sales+" Sales";
+ document.getElementById('aEarn').innerText=total.toFixed(2);
+ loadR();
+}
+function setPeriod(p){
+ document.getElementById('p7').style.background='#fff'; document.getElementById('p7').style.color='#000';
+ document.getElementById('p30').style.background='#fff'; document.getElementById('p30').style.color='#000';
+ document.getElementById('pC').style.background='#fff'; document.getElementById('pC').style.color='#000';
+ if(p==='7'){document.getElementById('p7').style.background='#2563eb';document.getElementById('p7').style.color='#fff'; document.getElementById('aLabel').innerText='Last 7 days';}
+ if(p==='30'){document.getElementById('p30').style.background='#2563eb';document.getElementById('p30').style.color='#fff'; document.getElementById('aLabel').innerText='Last 30 days';}
+ if(p==='custom'){document.getElementById('pC').style.background='#2563eb';document.getElementById('pC').style.color='#fff'; document.getElementById('aLabel').innerText='Custom Range';}
+}
 if(cur) loadR();
 </script>
 </body></html>
