@@ -1,1 +1,77 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Skatecart - Admin Wallet</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:sans-serif;background:#f1f5f9;color:#0f172a}.header{background:#0f172a;color:#fff;padding:16px;text-align:center;font-size:22px;font-weight:bold}.container{padding:12px;max-width:900px;margin:auto}.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:15px}@media(max-width:650px){.stats{grid-template-columns:1fr}}.stat{background:#fff;padding:18px;border-radius:14px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-top:4px solid #0f172a}.stat h2{font-size:26px;margin:8px 0}.card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.05);overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:500px}th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #eee;font-size:14px}th{background:#f8fafc}.btn{background:#16a34a;color:#fff;border:none;padding:8px 16px;border-radius:20px;font-weight:bold}.badge{background:#f59e0b;color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}</style></head><body><div class="header">SKATECART - ADMIN WALLET CONTROL</div><div class="container"><div class="stats"><div class="stat"><div>Total Mere Paas</div><h2 id="total">Rs 1700</h2><small>Earning aapke paas</small></div><div class="stat"><div>Pending Approval</div><h2 id="pending">Rs 1700</h2><small>Approval baki</small></div><div class="stat"><div>Paid to Users</div><h2 id="paid">Rs 0</h2><small>Bhej diya</small></div></div><div class="card"><h3 style="margin-bottom:12px">Pending Orders - Aap Approve Karoge Tabhi Paisa Jayega</h3><table id="tbl"></table></div><br><div style="text-align:center"><a href="./" style="background:#0f172a;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:800">Back to Dashboard</a></div></div><script>let data=[{id:"ORD-101",role:"Rider",name:"Ali",amount:500,status:"Pending"},{id:"ORD-102",role:"Seller",name:"Zain",amount:1200,status:"Pending"}];function show(){let html='<tr><th>Order ID</th><th>Role</th><th>Name</th><th>Amount</th><th>Status</th><th>Action</th></tr>';let tot=0,pen=0,paid=0;data.forEach(d=>{tot+=d.amount;if(d.status=="Pending")pen+=d.amount;else paid+=d.amount;html+=`<tr><td>${d.id}</td><td>${d.role}</td><td>${d.name}</td><td>Rs ${d.amount}</td><td><span class="badge">${d.status}</span></td><td>${d.status=="Pending"?`<button class="btn" onclick="approve('${d.id}')">Approve & Send</button>`:'Paid'}</td></tr>`});document.getElementById("tbl").innerHTML=html;document.getElementById("total").innerText="Rs "+tot;document.getElementById("pending").innerText="Rs "+pen;document.getElementById("paid").innerText="Rs "+paid;}window.approve=(id)=>{let o=data.find(x=>x.id==id);if(confirm(o.name+" ko Rs "+o.amount+" bhejna hai?")){o.status="Paid";alert("Done! Rs "+o.amount+" "+o.name+" ko bhej diya");show();}};show();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skatecart Admin Panel</title>
+<style>
+body{margin:0;font-family:system-ui;background:#0f0f0f;color:white}
+#loginBox{height:100vh;display:flex;align-items:center;justify-content:center}
+.login-card{background:white;color:black;padding:25px;border-radius:16px;width:90%;max-width:340px;text-align:center}
+.login-card input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;font-size:16px;box-sizing:border-box}
+.login-card button{width:100%;padding:12px;background:black;color:white;border:none;border-radius:8px;font-weight:bold}
+#adminPanel{display:none;padding:15px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:15px}
+.stat{background:#1f1f1f;padding:12px;border-radius:12px;text-align:center}
+.stat b{font-size:20px;display:block;color:#00ff88}
+.user-card{background:#1f1f1f;padding:12px;border-radius:12px;margin-bottom:10px;border-left:4px solid #ffcc00}
+.user-card.approved{border-left-color:#00ff88}
+.user-card.rejected{border-left-color:#ff4444}
+.btn{padding:6px 12px;border:none;border-radius:6px;font-weight:bold;margin-right:5px}
+.approve{background:#00ff88;color:black}
+.reject{background:#ff4444;color:white}
+</style>
+</head>
+<body>
+<div id="loginBox">
+  <div class="login-card">
+    <h2>🔒 Admin Login</h2>
+    <input id="u" placeholder="Username">
+    <input id="p" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="err" style="color:red;display:none">غلط Password</p>
+  </div>
+</div>
+<div id="adminPanel">
+  <h2>Skatecart Admin</h2>
+  <div class="stats">
+    <div class="stat"><b id="total">0</b>Total</div>
+    <div class="stat"><b id="pending">0</b>Pending</div>
+    <div class="stat"><b id="approved">0</b>Approved</div>
+  </div>
+  <div id="list"></div>
+</div>
+<script>
+const ADMIN_U="admin"; const ADMIN_P="Haresh@123";
+function login(){
+ if(document.getElementById('u').value===ADMIN_U && document.getElementById('p').value===ADMIN_P){
+  localStorage.setItem('skate_admin_login','true'); showAdmin();
+ }else{document.getElementById('err').style.display='block';}
+}
+function showAdmin(){
+ document.getElementById('loginBox').style.display='none';
+ document.getElementById('adminPanel').style.display='block';
+ loadUsers();
+}
+if(localStorage.getItem('skate_admin_login')==='true'){showAdmin();}
+function loadUsers(){
+ let users=JSON.parse(localStorage.getItem('skatecart_users')||'[]');
+ document.getElementById('total').innerText=users.length;
+ document.getElementById('pending').innerText=users.filter(u=>u.status==='pending').length;
+ document.getElementById('approved').innerText=users.filter(u=>u.status==='approved').length;
+ let h='';
+ users.forEach((u,i)=>{
+  h+=`<div class="user-card ${u.status}"><b>${u.name}</b> - ${u.email}<br>
+  Status: ${u.status}<br><br>
+  <button class="btn approve" onclick="setStatus(${i},'approved')">Approve</button>
+  <button class="btn reject" onclick="setStatus(${i},'rejected')">Reject</button></div>`;
+ });
+ document.getElementById('list').innerHTML=h;
+}
+function setStatus(i,s){
+ let users=JSON.parse(localStorage.getItem('skatecart_users')||'[]');
+ users[i].status=s; localStorage.setItem('skatecart_users',JSON.stringify(users)); loadUsers();
+}
+</script>
+</body>
+</html>
