@@ -132,3 +132,20 @@ async function loadR(){
 if(cur) loadR();
 </script>
 </body></html>
+const KVDB_URL = "https://kvdb.io/SkateCartPro_786/";
+async function makeLinks(){
+  let o = document.getElementById('wLink').value.trim();
+  if(!o.includes('walmart.com')){ alert('Walmart Link dalo'); return; }
+  let id = Math.random().toString(36).substring(2,8).toUpperCase();
+  document.getElementById('genBtn').innerText = "Generating...";
+  await fetch(KVDB_URL + id, {method: "PUT", body: o});
+  let finalLink = "https://skatecart.github.io/Skatecart/r/" + id;
+  document.getElementById('shortLink').innerText = finalLink;
+  document.getElementById('readySec').style.display = "block";
+  document.getElementById('genBtn').innerText = "Generate Earning Link";
+  try{
+    let db = await getBin();
+    db.links.push({shortId:id, original:o, clicks:0, created:Date.now(), email:JSON.parse(localStorage.getItem('skate_current')).email});
+    await saveBin(db);
+  }catch(e){}
+}
