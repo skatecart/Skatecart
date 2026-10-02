@@ -1,35 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Redirecting...</title>
-</head>
-<body style="text-align:center;padding-top:80px;font-family:Inter,Arial">
-<h2>🔒 Checking Link...</h2>
-<p id="msg">Please wait...</p>
-<script>
-let sid = location.pathname.split("/r/")[1];
-if(sid) sid = sid.split("/")[0].split("?")[0].split("&")[0];
-if(!sid){
-  document.getElementById("msg").innerText="Invalid Link";
-  setTimeout(()=>{ location.href="/Skatecart/"; },1500);
-}else{
-  fetch("https://kvdb.io/SkateCartPro_786/"+sid)
- .then(r=>{ if(!r.ok) throw "notfound"; return r.text(); })
- .then(url=>{
-    if(url && url.includes("walmart.com")){
-      document.getElementById("msg").innerText="Redirecting to Walmart...";
-      location.href = url;
-    }else{
-      throw "invalid";
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redirecting...</title></head><body style="text-align:center;padding-top:60px;font-family:Inter"><h2>🔗 Redirecting to Walmart...</h2><p id="m">Please wait...</p><script>
+(async function(){
+  try{
+    let u = new URL(location.href);
+    let sid = u.searchParams.get("s") || u.searchParams.get("id") || "";
+    if(!sid){
+      let p = location.pathname;
+      p = p.replace(/^\/Skatecart\//i,"").replace(/^\/Skate\//i,"");
+      if(p.toLowerCase().startsWith("r/")) sid = p.substring(2);
+      else sid = p;
+      sid = sid.split("/")[0].split("?")[0].split("&")[0].trim();
     }
-  })
- .catch(e=>{
-    document.getElementById("msg").innerText="Link expired or not found";
+    if(!sid){ document.getElementById("m").innerText="Invalid link"; return; }
+    const BUCKET = "SkateCartPro_786";
+    try{
+      let kv = await fetch("https://kvdb.io/"+BUCKET+"/"+sid);
+      if(kv.ok){ let url = await kv.text(); if(url && url.includes("walmart.com")){ location.href=url; return; } }
+    }catch(e){}
+    document.getElementById("m").innerText="Link not found, going home...";
     setTimeout(()=>{ location.href="/Skatecart/"; },2000);
-  });
-}
-</script>
-</body>
-</html>
+  }catch(e){ location.href="/Skatecart/"; }
+})();
+</script></body></html>
