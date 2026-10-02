@@ -2,37 +2,34 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Redirecting...</title>
 </head>
-<body style="text-align:center;padding-top:50px;font-family:Inter">
-<h2>🔗 Checking Link...</h2>
+<body style="text-align:center;padding-top:80px;font-family:Inter,Arial">
+<h2>🔒 Checking Link...</h2>
 <p id="msg">Please wait...</p>
 <script>
-(async function(){
-  let path = location.pathname.replace(/^\/Skatecart\//i, "").replace(/^\/Skate\//i, "");
-  let sid = path.toLowerCase().startsWith("r/")? path.substring(2) : path;
-  sid = sid.split("/")[0].split("?")[0].split("&")[0].trim();
-  if(!sid){ document.getElementById("msg").innerText="Invalid link"; return; }
-  try{
-    const kv = await fetch("https://kvdb.io/SkateCartPro_786/"+sid);
-    if(kv.ok){
-      const url = await kv.text();
-      if(url && url.includes("walmart.com")){
-        window.location.href = url;
-        return;
-      }
+let sid = location.pathname.split("/r/")[1];
+if(sid) sid = sid.split("/")[0].split("?")[0].split("&")[0];
+if(!sid){
+  document.getElementById("msg").innerText="Invalid Link";
+  setTimeout(()=>{ location.href="/Skatecart/"; },1500);
+}else{
+  fetch("https://kvdb.io/SkateCartPro_786/"+sid)
+ .then(r=>{ if(!r.ok) throw "notfound"; return r.text(); })
+ .then(url=>{
+    if(url && url.includes("walmart.com")){
+      document.getElementById("msg").innerText="Redirecting to Walmart...";
+      location.href = url;
+    }else{
+      throw "invalid";
     }
-    const BIN_ID="6abdd30eac6210605a07b484";
-    const KEY="$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
-    const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{headers:{"X-Master-Key":KEY}});
-    const d = await r.json();
-    const f = (d.record.links||[]).find(l=>l.shortId===sid);
-    if(f){ window.location.href=f.original; return; }
-  }catch(e){}
-  document.getElementById("msg").innerText="Link not found, redirecting home...";
-  setTimeout(()=>{ window.location.href="/Skatecart/"; },1500);
-})();
+  })
+ .catch(e=>{
+    document.getElementById("msg").innerText="Link expired or not found";
+    setTimeout(()=>{ location.href="/Skatecart/"; },2000);
+  });
+}
 </script>
 </body>
 </html>
