@@ -9,20 +9,27 @@
 <h2>🔒 Checking Link...</h2>
 <p id="msg">Please wait...</p>
 <script>
-let sid = location.pathname.split("/r/")[1];
-if(sid) sid = sid.split("/")[0].split("?")[0].split("#")[0].toUpperCase().trim();
+let path = location.pathname.replace(/^\/+/, '');
+let sid = "";
+if(path.toLowerCase().startsWith("r/")){
+  sid = path.substring(2);
+}else{
+  sid = path;
+}
+sid = sid.split("/")[0].split("?")[0].split("#")[0].toUpperCase().trim();
+
 if(!sid){
   document.getElementById("msg").innerText="Invalid Link";
 }else{
   fetch("https://kvdb.io/SkateCartPro_786/"+sid)
- .then(r=>{ if(!r.ok) throw "notfound"; return r.text(); })
- .then(url=>{
+.then(r=>{ if(!r.ok) throw "notfound"; return r.text(); })
+.then(url=>{
     url=url.trim();
     if(!url.startsWith("http")) throw "bad";
     document.getElementById("msg").innerText="Redirecting to Walmart...";
     location.href=url;
   })
- .catch(()=>{
+.catch(()=>{
     document.getElementById("msg").innerText="Link not found: "+sid;
   });
 }
