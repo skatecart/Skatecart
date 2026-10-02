@@ -15,7 +15,6 @@
   sid = sid.split("/")[0].split("?")[0].split("&")[0].trim();
   if(!sid){ document.getElementById("msg").innerText="Invalid link"; return; }
   try{
-    // NEW PRO SYSTEM KVDB
     const kv = await fetch("https://kvdb.io/SkateCartPro_786/"+sid);
     if(kv.ok){
       const url = await kv.text();
@@ -24,7 +23,6 @@
         return;
       }
     }
-    // OLD BIN SYSTEM BACKUP
     const BIN_ID="6abdd30eac6210605a07b484";
     const KEY="$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
     const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,{headers:{"X-Master-Key":KEY}});
