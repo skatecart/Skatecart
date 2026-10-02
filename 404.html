@@ -2,45 +2,38 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Redirecting to Walmart...</title>
-<style>body{font-family:Inter,sans-serif;text-align:center;padding-top:80px}h2{color:#0f766e}</style>
 </head>
-<body>
-<h2>🔒 Going to Walmart...</h2>
-<p>Please wait 1 second...</p>
+<body style="text-align:center;padding-top:80px;font-family:sans-serif">
+<h2>🔒 Checking Link...</h2>
+<p id="msg">Walmart پر لے جایا جا رہا ہے...</p>
 <script>
-(async function(){
-  // 1. NAYA SYSTEM /r/ wala
-  if(location.pathname.includes("/r/")){
-    try{
-      let code = location.pathname.split("/r/")[1].split("/")[0].split("?")[0].split("#")[0];
-      let b64 = code.replace(/-/g,'+').replace(/_/g,'/');
-      while(b64.length%4) b64+='=';
-      let url = atob(b64);
-      if(url.includes("http")){
-        window.location.replace(url);
-        return;
-      }
-    }catch(e){}
+  let path = location.pathname;
+  let id = "";
+  if(path.includes("/r/")){
+    id = path.split("/r/")[1].split("/")[0].split("?")[0].split("#")[0].toUpperCase();
   }
-  // 2. PURANA SYSTEM?s= wala - aapki HAOA21YB wali link ke liye
-  let sid = new URLSearchParams(location.search).get('s');
-  if(sid){
-    try{
-      const BIN_ID="6abdd30eac6210605a07b484";
-      const KEY="$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
-      let res = await fetch("https://api.jsonbin.io/v3/b/"+BIN_ID+"/latest",{headers:{"X-Master-Key":KEY}});
-      let data = await res.json();
-      let found = (data.record.links||[]).find(l=>l.shortId===sid);
-      if(found && found.original){
-        window.location.replace(found.original);
-        return;
+  if(!id){
+    document.getElementById("msg").innerText = "Invalid Link";
+  } else {
+    fetch("https://kvdb.io/SkateCartPro_786/" + id)
+   .then(r => {
+      if(!r.ok) throw "not found";
+      return r.text();
+    })
+   .then(url => {
+      url = url.trim();
+      if(url.startsWith("http")){
+        window.location.href = url;
+      } else {
+        document.getElementById("msg").innerText = "Link Expired: " + id;
       }
-    }catch(e){}
+    })
+   .catch(()=>{
+      document.getElementById("msg").innerText = "Link not found: " + id;
+    });
   }
-  document.body.innerHTML="<h2>Link not found</h2><p><a href='/Skatecart/'>Go Home</a></p>";
-})();
 </script>
 </body>
 </html>
