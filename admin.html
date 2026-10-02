@@ -100,16 +100,22 @@ async function setStatus(i,s){
   data.users[i].status = s;
   await saveBin(data);
 
-  // Email bhejna
+  // Email bhejna - FIXED
   if(s==='approved'){
     try{
-      emailjs.send("service_wxtih9l", "template_qrvny1f", {
+      await emailjs.send("service_wxtih9l", "template_d78rh0h", {
         to_email: data.users[i].email,
-        to_name: data.users[i].fullName,
-        message: "Congratulations! Your SkateCart account has been APPROVED. You can now login and start earning."
+        to_name: data.users[i].fullName || data.users[i].firstName || "User",
+        user_email: data.users[i].email,
+        user_name: data.users[i].fullName || data.users[i].firstName || "User",
+        message: "Congratulations! Your SkateCart account has been APPROVED. You can now login and start earning at skatecart.shop",
+        reply_to: "hareshkkthakor666@gmail.com"
       });
-      alert('Approved + Email bhej diya ✅');
-    }catch(e){ alert('Approved ho gaya lekin Email me error: '+e.message); }
+      alert('Approved + Email '+ data.users[i].email +' par bhej diya ✅');
+    }catch(e){
+      console.log(e);
+      alert('Approved ho gaya lekin Email me error: '+ (e.text || e.message));
+    }
   } else {
     alert('Status '+s+' kar diya');
   }
