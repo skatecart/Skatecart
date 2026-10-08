@@ -50,12 +50,6 @@
   const params = new URLSearchParams(window.location.search);
   const sid = params.get('s');
   if(!sid) return;
-
-  // چیک کرو کیا مالک خود اپنا لنک کھول رہا ہے
-  let curStr = localStorage.getItem('skate_current');
-  let curEmail = null;
-  try{ curEmail = curStr ? JSON.parse(curStr).email : null; }catch(e){}
-
   try{
     const BIN_ID = "6abdd30eac6210605a07b484";
     const MASTER_KEY = "$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
@@ -65,18 +59,12 @@
     const links = record.links || [];
     const found = links.find(l=>l.shortId===sid);
     if(found){
-      // اگر مالک خود ہے تو ری ڈائریکٹ مت کرو، ڈیش بورڈ ہی دکھاؤ
-      if(curEmail && found.owner === curEmail){
-        console.log("Owner view - no redirect");
-        return;
-      }
-      // کسٹمر ہے تو کلک گنو اور والمارٹ بھیجو
       document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;font-family:Inter;text-align:center;padding:20px'><h2 style='color:#0f766e'>Redirecting to Walmart...</h2><p>Please wait</p></div>";
       found.clicks = (found.clicks||0)+1;
       await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {method:"PUT", headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY}, body:JSON.stringify(record)});
       window.location.href = found.original;
     }
-  }catch(e){ console.log(e); }
+  }catch(e){}
 })();
 </script>
 
@@ -315,78 +303,94 @@ async function doAuth(){
      return;
    }
    localStorage.setItem('skate_current',JSON.stringify({email:f.email,name:f.fullName}));
-   document.getElementById('popName').innerText='Hi '+(f.fullName||'')+'! 👋';
    document.getElementById('loginPage').style.display='none';
-   document.getElementById('approvedPop').style.display='block';
+   loadDash();
  }
 }
 function checkLogin(){
- let curStr=localStorage.getItem('skate_current');
- if(!curStr){document.getElementById('loginPage').style.display='flex';return null;}
- document.getElementById('loginPage').style.display='none';
- return JSON.parse(curStr);
+  let cur = localStorage.getItem('skate_current');
+  if(cur){
+    try{
+      let o = JSON.parse(cur);
+      document.getElementById('uName').innerText = o.name;
+      document.getElementById('uEmail').innerText = o.email;
+      document.getElementById('loginPage').style.display='none';
+      loadDash();
+    }catch(e){}
+  }
 }
-function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('show')}
-function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+checkLogin();
+function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('show');}
+function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 function showPage(id,el){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.getElementById(id)?.classList.add('active');
- document.querySelectorAll('.mItem').forEach(m=>m.classList.remove('active'));
- if(el) el.classList.add('active');
- closeMenu();
- if(id==='analytics') applyAnalytics();
- if(id==='payment') updatePayout();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.mItem').forEach(m=>m.classList.remove('active'));
+  if(el) el.classList.add('active');
+  closeMenu();
+  if(id==='analytics') applyAnalytics();
 }
-function signOut(){localStorage.removeItem('skate_current');location.reload();}
-let cur=checkLogin();
-if(cur){document.getElementById('uEmail').innerText=cur.email;document.getElementById('uName').innerText=cur.name;}
-function genID(){return Math.random().toString(36).substring(2,10).toUpperCase();}
-function copyT(id){let t=document.getElementById(id).innerText;navigator.clipboard.writeText(t);alert("Copied: "+t);}
+async function loadDash(){
+  let cur = JSON.parse(localStorage.getItem('skate_current')||'{}');
+  if(!cur.email) return;
+  let db = await getBin();
+  let myLinks = (db.links||[]).filter(l=>l.owner===cur.email);
+  let totClicks = myLinks.reduce((a,b)=>a+(b.clicks||0),0);
+  let totEarn = totClicks*0.25;
+  document.getElementById('clicks').innerText = totClicks;
+  document.getElementById('earn').innerText = '$'+totEarn.toFixed(2);
+  document.getElementById('pEarn').innerText = '$'+totEarn.toFixed(2);
+  document.getElementById('pEarnSmall').innerText = totEarn.toFixed(2);
+  let perc = Math.min(100,(totEarn/25)*100);
+  document.getElementById('pBar').style.width = perc+'%';
+  document.getElementById('pBar2').style.width = perc+'%';
+  let statusEl = document.getElementById('status');
+  let u = (db.users||[]).find(x=>x.email===cur.email);
+  if(u && u.status==='approved'){ statusEl.innerText='Approved'; statusEl.style.color='#22c55e'; }
+  else { statusEl.innerText='Pending'; statusEl.style.color='#facc15'; }
+  let recentDiv = document.getElementById('recent');
+  recentDiv.innerHTML='';
+  myLinks.slice().reverse().forEach((l,i)=>{
+    let idx = myLinks.length - i;
+    recentDiv.innerHTML+=`<div class="rCardZy"><div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;align-items:center;gap:8px"><div class="numBadge">${idx}</div><div style="font-size:12px;color:#64748b">${new Date(l.created||Date.now()).toLocaleDateString()}</div></div><div style="background:#f1f5f9;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800">Clicks: ${l.clicks||0}</div></div><div style="font-size:13px;margin-top:8px;word-break:break-all">${l.original.slice(0,60)}...</div><div class="linkArea" style="font-size:12px;margin-top:8px">https://skatecart.github.io/Skatecart/?s=${l.shortId}</div><button class="copyBz" onclick="navigator.clipboard.writeText('https://skatecart.github.io/Skatecart/?s=${l.shortId}');this.innerText='Copied!'">Copy Link</button></div>`;
+  });
+}
 async function makeLinks(){
- let o=document.getElementById('wLink').value.trim();if(!o)return alert("Please paste a link");
- document.getElementById('genBtn').innerText="Generating...";
- let sid=genID();
- let short=location.origin+location.pathname+"?s="+sid;
- let db = await getBin();
- if(!db.links) db.links=[];
- db.links.push({shortId:sid,original:o,shortLink:short,owner:cur.email,clicks:0,sales:0,saleAmount:0,date:new Date().toLocaleDateString('en-GB'),createdAt:Date.now()});
- await saveBin(db);
- document.getElementById('shortLink').innerText=short;
- document.getElementById('readySec').style.display='block';
- loadR();
- document.getElementById('genBtn').innerText="Generate Earning Link";
+  let w = document.getElementById('wLink').value.trim();
+  if(!w || !w.includes('walmart')){alert('Sahi Walmart Link dalo bhai'); return;}
+  let cur = JSON.parse(localStorage.getItem('skate_current')||'{}');
+  if(!cur.email){alert('Login karo pehle'); return;}
+  document.getElementById('genBtn').innerText='Generating...';
+  let db = await getBin();
+  if(!db.links) db.links=[];
+  let sid = Math.random().toString(36).substring(2,8).toUpperCase();
+  db.links.push({shortId:sid, original:w, owner:cur.email, clicks:0, created:Date.now()});
+  await saveBin(db);
+  document.getElementById('shortLink').innerText = `https://skatecart.github.io/Skatecart/?s=${sid}`;
+  document.getElementById('readySec').style.display='block';
+  document.getElementById('genBtn').innerText='Generate Earning Link';
+  document.getElementById('wLink').value='';
+  loadDash();
 }
-async function loadR(){
- if(!cur) return;
- let db = await getBin();
- let all=db.links||[];
- let mine=all.filter(x=>x.owner===cur.email).reverse();
- let clicks=mine.reduce((a,b)=>a+(b.clicks||0),0);
- let sales=mine.reduce((a,b)=>a+(b.sales||0),0);
- let saleComm=mine.reduce((a,b)=>a+(b.saleAmount||0),0);
- let total=clicks*0.25+saleComm;
- document.getElementById('clicks').innerText=clicks;
- document.getElementById('sales').innerText=sales+" Sales";
- document.getElementById('saleEarn').innerText="$"+saleComm.toFixed(2);
- document.getElementById('earn').innerText="$"+total.toFixed(2);
- document.getElementById('pEarn').innerText="$"+total.toFixed(2);
- document.getElementById('pEarnSmall').innerText=total.toFixed(2);
- document.getElementById('pBar').style.width=Math.min(100,(total/25*100))+"%";
- document.getElementById('pBar2').style.width=Math.min(100,(total/25*100))+"%";
- let html='';
- mine.forEach((l,i)=>{
-   html+=`<div class="rCardZy"><div style="display:flex;justify-content:space-between"><div style="font-weight:800;font-size:13px">${l.original.slice(0,40)}...</div><div class="numBadge">#${mine.length-i}</div></div><div style="font-size:12px;color:#64748b;margin-top:6px">Clicks: ${l.clicks||0} | Date: ${l.date}</div><div class="linkArea" style="font-size:12px" id="link${i}">${l.shortLink}</div><button class="copyBz" onclick="copyT('link${i}')">Copy Link</button></div>`;
- });
- document.getElementById('recent').innerHTML=html || '<p style="text-align:center;color:#999">No links yet</p>';
- document.getElementById('aRecent').innerHTML=html || '';
- document.getElementById('aClicks').innerText=clicks;
- document.getElementById('aSales').innerText=sales+" Sales";
- document.getElementById('aEarn').innerText=total.toFixed(2);
+function copyT(id){ let t=document.getElementById(id).innerText; navigator.clipboard.writeText(t); alert('Copied: '+t); }
+function signOut(){ localStorage.removeItem('skate_current'); location.reload(); }
+let currentPeriod='30';
+function setPeriod(p){
+  currentPeriod=p;
+  document.getElementById('p7').style.background=p==='7'?'#2563eb':'#fff'; document.getElementById('p7').style.color=p==='7'?'#fff':'#000';
+  document.getElementById('p30').style.background=p==='30'?'#2563eb':'#fff'; document.getElementById('p30').style.color=p==='30'?'#fff':'#000';
+  document.getElementById('pC').style.background=p==='custom'?'#2563eb':'#fff'; document.getElementById('pC').style.color=p==='custom'?'#fff':'#000';
 }
-function setPeriod(p){ document.querySelectorAll('[id^=p]').forEach(b=>{b.style.background='#fff';b.style.color='#000';b.style.border='1px solid #e2e8f0';}); document.getElementById(p==='7'?'p7':p==='30'?'p30':'pC').style.background='#2563eb'; document.getElementById(p==='7'?'p7':p==='30'?'p30':'pC').style.color='#fff'; document.getElementById('aLabel').innerText = p==='7'?'Last 7 days':p==='30'?'Last 30 days':'Custom'; }
-function applyAnalytics(){ loadR(); }
-function updatePayout(){ loadR(); }
-if(cur) loadR();
+async function applyAnalytics(){
+  let cur = JSON.parse(localStorage.getItem('skate_current')||'{}');
+  let db = await getBin();
+  let myLinks = (db.links||[]).filter(l=>l.owner===cur.email);
+  let totClicks = myLinks.reduce((a,b)=>a+(b.clicks||0),0);
+  document.getElementById('aClicks').innerText = totClicks;
+  document.getElementById('aSales').innerText = '0 Sales';
+  document.getElementById('aEarn').innerText = (totClicks*0.25).toFixed(2);
+  document.getElementById('aLabel').innerText = currentPeriod==='7' ? 'Last 7 days' : 'Last 30 days';
+}
 </script>
 </body>
 </html>
