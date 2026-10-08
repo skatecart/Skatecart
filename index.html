@@ -49,24 +49,34 @@
 (async function(){
   const params = new URLSearchParams(window.location.search);
   const sid = params.get('s');
-  if(sid){
-    document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;font-family:Inter;text-align:center;padding:20px'><h2 style='color:#0f766e'>Redirecting to Walmart...</h2><p>Please wait</p></div>";
-    try{
-      const BIN_ID = "6abdd30eac6210605a07b484";
-      const MASTER_KEY = "$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {headers:{"X-Master-Key":MASTER_KEY}});
-      const data = await res.json();
-      const record = data.record;
-      const links = record.links || [];
-      const found = links.find(l=>l.shortId===sid);
-      if(found){
-        found.clicks = (found.clicks||0)+1;
-        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {method:"PUT", headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY}, body:JSON.stringify(record)});
-        window.location.href = found.original;
+  if(!sid) return;
+
+  // چیک کرو کیا مالک خود اپنا لنک کھول رہا ہے
+  let curStr = localStorage.getItem('skate_current');
+  let curEmail = null;
+  try{ curEmail = curStr ? JSON.parse(curStr).email : null; }catch(e){}
+
+  try{
+    const BIN_ID = "6abdd30eac6210605a07b484";
+    const MASTER_KEY = "$2a$10$eqhYW4lz.XF79c/VhoNWpudE635rZt5Fw91kZUjs0GNXtHC7ePEdu";
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {headers:{"X-Master-Key":MASTER_KEY}});
+    const data = await res.json();
+    const record = data.record;
+    const links = record.links || [];
+    const found = links.find(l=>l.shortId===sid);
+    if(found){
+      // اگر مالک خود ہے تو ری ڈائریکٹ مت کرو، ڈیش بورڈ ہی دکھاؤ
+      if(curEmail && found.owner === curEmail){
+        console.log("Owner view - no redirect");
+        return;
       }
-    }catch(e){}
-    return;
-  }
+      // کسٹمر ہے تو کلک گنو اور والمارٹ بھیجو
+      document.body.innerHTML = "<div style='display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;font-family:Inter;text-align:center;padding:20px'><h2 style='color:#0f766e'>Redirecting to Walmart...</h2><p>Please wait</p></div>";
+      found.clicks = (found.clicks||0)+1;
+      await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {method:"PUT", headers:{"Content-Type":"application/json","X-Master-Key":MASTER_KEY}, body:JSON.stringify(record)});
+      window.location.href = found.original;
+    }
+  }catch(e){ console.log(e); }
 })();
 </script>
 
@@ -156,7 +166,6 @@
 </div>
 
 <div class="wrap">
-
   <div id="links" class="page active">
     <div class="payout">
       <div style="font-weight:900;font-size:18px">💳 Your Payout Dashboard</div>
@@ -186,7 +195,6 @@
       <div id="recent" style="margin-top:10px"></div>
     </div>
   </div>
-
   <div id="analytics" class="page">
     <div class="box">
       <div style="font-weight:900;font-size:20px;text-align:center">📊 Analytics</div>
@@ -212,7 +220,6 @@
       <div id="aRecent" style="margin-top:10px"></div>
     </div>
   </div>
-
   <div id="payment" class="page">
     <div class="box" style="text-align:center">
       <div style="font-weight:900;font-size:20px">💳 Payouts</div>
@@ -226,14 +233,12 @@
       <button class="btn" style="opacity:.6">Request Payout (Min $25)</button>
     </div>
   </div>
-
   <div id="history" class="page">
     <div class="box" style="text-align:center">
       <div style="font-weight:900;font-size:20px">📜 Payment History</div>
       <p style="font-size:13px;color:#999;margin-top:20px">No payment history yet.<br>Your payouts will show here after 45 days.</p>
     </div>
   </div>
-
   <div class="footerZy">
     © 2026 SkateCart. All rights reserved. BIN Connected ✓<br>
     <div style="margin-top:12px; font-size:13px;">
@@ -242,7 +247,6 @@
       <a href="contact.html" style="color:#0f766e; text-decoration:none; font-weight:800; margin:0 8px;">Contact Us</a>
     </div>
   </div>
-
 </div>
 
 <script>
